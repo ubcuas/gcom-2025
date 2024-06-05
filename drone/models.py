@@ -18,12 +18,12 @@ class DroneSingleton(models.Model):
         MANUAL = "MAN", _("Manual")
         FAILSAFE = "FSF", _("Failsafe")
 
-    mode = models.CharField(null=False, choices=ModeOptions, default=ModeOptions.AUTO)
-    armed = models.CharField(default=False)
+    mode = models.CharField(max_length=3, choices=ModeOptions.choices, default=ModeOptions.AUTO)
+    armed = models.BooleanField(default=False)
 
-    # Singleton Stuff
     class Meta:
-        abstract = True    
+        verbose_name = _("Drone Singleton")
+        verbose_name_plural = _("Drone Singleton")
 
     def save(self, *args, **kwargs):
         self.pk = 1
@@ -36,4 +36,16 @@ class DroneSingleton(models.Model):
     def load(cls):
         obj, created = cls.objects.get_or_create(pk=1)
         return obj
-    
+
+    # Singleton instance holder
+    _instance = None
+
+    @classmethod
+    def get_instance(cls):
+        if cls._instance is None:
+            cls._instance = cls.load()
+        return cls._instance
+
+    @classmethod
+    def reset_instance(cls):
+        cls._instance = None

@@ -18,9 +18,11 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from drone import urls
 
 from nav.views import WaypointViewset
 from odlc.views import GroundObjectViewset, CameraUploadAPIView
+
 
 
 router = DefaultRouter()
@@ -30,7 +32,8 @@ router.register(r'groundobject', GroundObjectViewset, basename="groundobject")
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
-    path('image/', CameraUploadAPIView.as_view(), name='upload-file')
+    path('image/', CameraUploadAPIView.as_view(), name='upload-file'),
+    path('drone/', include("drone.urls")),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
