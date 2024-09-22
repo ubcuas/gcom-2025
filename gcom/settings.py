@@ -32,7 +32,8 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'socketio',
+    'daphne',
+    "channels",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,8 +43,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'nav.apps.NavConfig',
     'drone.apps.DroneConfig',
-    'mission.apps.MissionConfig',
-    'odlc.apps.ODLCConfig',
 ]
 
 MIDDLEWARE = [
@@ -75,7 +74,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'gcom.wsgi.application'
-# ASGI_APPLICATION = "gcom.asgi.application"
+ASGI_APPLICATION = "gcom.asgi.application"
 
 
 # Database

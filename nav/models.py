@@ -1,6 +1,5 @@
 import uuid
 from django.db import models
-from mission.models import Mission
 
 class Waypoint(models.Model):
     
@@ -23,6 +22,3 @@ class Waypoint(models.Model):
     
 class OrderedWaypoint(Waypoint):
     order = models.IntegerField(null=False)
-
-class MissionWaypoint(OrderedWaypoint):
-    mission = models.ForeignKey(Mission, on_delete=models.CASCADE)

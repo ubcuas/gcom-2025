@@ -21,18 +21,15 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from drone import urls
 
 from nav.views import WaypointViewset
-from odlc.views import GroundObjectViewset, CameraUploadAPIView
 
 
 
 router = DefaultRouter()
 router.register(r'waypoint', WaypointViewset, basename='waypoint')
-router.register(r'groundobject', GroundObjectViewset, basename="groundobject")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
-    path('image/', CameraUploadAPIView.as_view(), name='upload-file'),
     path('drone/', include("drone.urls")),
 ]
 
