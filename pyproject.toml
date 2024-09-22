@@ -16,6 +16,9 @@ requests = "^2.32.3"
 celery = "^5.4.0"
 channels = "^4.1.0"
 daphne = "^4.1.2"
+uvicorn = "^0.30.6"
+python-socketio = "^5.11.4"
+websockets = "^13.1"
 
 
 [build-system]
