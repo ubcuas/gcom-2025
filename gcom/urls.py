@@ -18,17 +18,23 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from drone import urls
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
 
 from nav.views import WaypointViewset
-
-
 
 router = DefaultRouter()
 router.register(r'waypoint', WaypointViewset, basename='waypoint')
 
 urlpatterns = [
+    # Swagger Docs
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+
+    # Admin Site
     path('admin/', admin.site.urls),
+
+    # API
     path('', include(router.urls)),
     path('drone/', include("drone.urls")),
 ]
