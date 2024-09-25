@@ -35,8 +35,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # API
-    path('', include(router.urls)),
-    path('drone/', include("drone.urls")),
+    path('api/', include(router.urls)),
+    path('api/drone/', include("drone.urls")),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

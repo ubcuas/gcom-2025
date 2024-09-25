@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from .models import Waypoint
 from .serializers import WaypointSerializer
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 
 # Create your views here.
 class WaypointViewset(viewsets.ModelViewSet):
