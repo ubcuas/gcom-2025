@@ -1,0 +1,46 @@
+name: Django CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Run Django Tests
+    runs-on: ubuntu-latest
+
+    env:
+      DJANGO_SETTINGS_MODULE: gcom.settings
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          export PATH="$HOME/.local/bin:$PATH"
+
+      - name: Install dependencies with Poetry
+        run: |
+          poetry install --no-root
+        env:
+          PATH: "$HOME/.local/bin:$PATH"
+
+      - name: Run Django migrations
+        run: poetry run python manage.py migrate
+        env:
+          PATH: "$HOME/.local/bin:$PATH"
+
+      - name: Run Django tests
+        run: poetry run python manage.py test
+        env:
+          PATH: "$HOME/.local/bin:$PATH"
