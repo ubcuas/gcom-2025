@@ -9,19 +9,6 @@ on:
       - main
 
 jobs:
-  flake8:
-    name: flake8
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - run: python -m pip install flake8
-      - name: flake8
-        uses: py-actions/flake8@v2
   black:
     runs-on: ubuntu-latest
     steps:
