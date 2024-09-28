@@ -1,0 +1,49 @@
+name: Django CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Run Django Tests
+    runs-on: ubuntu-latest
+
+    env:
+      DJANGO_SETTINGS_MODULE: gcom.settings
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+        
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: '1.8.2'
+
+      - name: Setup virtual environment
+        run: |
+          poetry config virtualenvs.create true --local
+          poetry config virtualenvs.in-project true --local
+
+      - uses: actions/cache@v3
+        name: Create cache
+        with:
+          path: ./.venv
+          key: venv-${{ hashFiles('poetry.lock') }}
+          
+      - name: Install the project dependencies
+        run: poetry install
+        
+      - name: Run Django tests
+        run: poetry run python manage.py test
+        env:
+          PATH: "$HOME/.local/bin:$PATH"
