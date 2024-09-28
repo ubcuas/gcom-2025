@@ -44,6 +44,6 @@ jobs:
         run: poetry install
         
       - name: Run Django tests
-        run: poetry run python manage.py test
+        run: poetry run python src/manage.py test
         env:
           PATH: "$HOME/.local/bin:$PATH"
