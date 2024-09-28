@@ -18,28 +18,31 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+        
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
-
+        
       - name: Install Poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: '1.8.2'
+
+      - name: Setup virtual environment
         run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          export PATH="$HOME/.local/bin:$PATH"
+          poetry config virtualenvs.create true --local
+          poetry config virtualenvs.in-project true --local
 
-      - name: Install dependencies with Poetry
-        run: |
-          poetry install --no-root
-        env:
-          PATH: "$HOME/.local/bin:$PATH"
-
-      - name: Run Django migrations
-        run: poetry run python manage.py migrate
-        env:
-          PATH: "$HOME/.local/bin:$PATH"
-
+      - uses: actions/cache@v3
+        name: Create cache
+        with:
+          path: ./.venv
+          key: venv-${{ hashFiles('poetry.lock') }}
+          
+      - name: Install the project dependencies
+        run: poetry install
+        
       - name: Run Django tests
         run: poetry run python manage.py test
         env:
