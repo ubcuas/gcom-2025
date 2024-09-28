@@ -1,13 +1,14 @@
 import requests
 import json
 
+
 class DroneApiClient:
     _mission_planner_api_url = "http://localhost:9001"
 
     @staticmethod
     def _fetch_from_mission_planner(endpoint, method="GET", data=None):
         url = f"{DroneApiClient._mission_planner_api_url}/{endpoint}"
-        headers = {'Content-Type': 'application/json'}
+        headers = {"Content-Type": "application/json"}
         if method == "GET":
             response = requests.get(url)
         elif method == "POST":
@@ -24,11 +25,15 @@ class DroneApiClient:
 
     @staticmethod
     def takeoff(altitude):
-        return DroneApiClient._fetch_from_mission_planner("drone/takeoff", method="POST", data={"altitude": altitude})
+        return DroneApiClient._fetch_from_mission_planner(
+            "drone/takeoff", method="POST", data={"altitude": altitude}
+        )
 
     @staticmethod
     def arm(arm_value):
-        return DroneApiClient._fetch_from_mission_planner("drone/arm", method="POST", data={"arm": arm_value})
+        return DroneApiClient._fetch_from_mission_planner(
+            "drone/arm", method="POST", data={"arm": arm_value}
+        )
 
     @staticmethod
     def land():
@@ -36,7 +41,9 @@ class DroneApiClient:
 
     @staticmethod
     def rtl(altitude):
-        return DroneApiClient._fetch_from_mission_planner("drone/rtl", method="POST", data={"altitude": altitude})
+        return DroneApiClient._fetch_from_mission_planner(
+            "drone/rtl", method="POST", data={"altitude": altitude}
+        )
 
     @staticmethod
     def lock():
@@ -50,10 +57,14 @@ class DroneApiClient:
     def get_queue():
         return DroneApiClient._fetch_from_mission_planner("drone/queue")
 
-    @staticmethod 
+    @staticmethod
     def post_queue(queue):
-        return DroneApiClient._fetch_from_mission_planner("drone/queue", method="POST", data=queue)
+        return DroneApiClient._fetch_from_mission_planner(
+            "drone/queue", method="POST", data=queue
+        )
 
     @staticmethod
     def post_home(wp):
-        return DroneApiClient._fetch_from_mission_planner("drone/home", method="POST", data=wp)
+        return DroneApiClient._fetch_from_mission_planner(
+            "drone/home", method="POST", data=wp
+        )
