@@ -3,8 +3,11 @@ from .models import Waypoint
 from .serializers import WaypointSerializer
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 
+
 # Create your views here.
 class WaypointViewset(viewsets.ModelViewSet):
+    """Viewset for CRUD operations on Waypoints"""
+
     queryset = Waypoint.objects.all()
     serializer_class = WaypointSerializer
 

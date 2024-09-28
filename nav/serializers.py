@@ -1,9 +1,10 @@
 from rest_framework import serializers
 from .models import Waypoint
 
+
 class WaypointSerializer(serializers.ModelSerializer):
-    mission = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
-    
+    """Serializer to convert Waypoint objects to JSON"""
+
     class Meta:
         model = Waypoint
-        fields = '__all__'
+        fields = "__all__"
