@@ -1,0 +1,29 @@
+name: Upload Docker Image as Artifact
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Build Docker image
+      run: docker build -t gcom-2025 .
+
+    - name: Save Docker image to file
+      run: docker save gcom-2025 -o gcom-2025.tar
+
+    - name: Upload Docker image as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: GCOM-2025
+        path: gcom-2025.tar
