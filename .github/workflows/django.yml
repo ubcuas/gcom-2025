@@ -46,4 +46,6 @@ jobs:
       - name: Run Django tests
         shell: bash
         working-directory: ./src
-        run: poetry run python manage.py test
+        run: |
+          source .venv/bin/activate  # Activate the virtual environment manually
+          poetry run python manage.py test
