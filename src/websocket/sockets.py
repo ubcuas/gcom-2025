@@ -51,7 +51,8 @@ async def ping(sid: str) -> None:
 
 @sio.on('drone_update')
 async def drone_update(sid: str, data: dict) -> None:
-    """Runs whenever the drone telemetry data is received
+    """
+    Runs whenever the drone telemetry data is received
     Saves the telemetry data to the database and deletes records over 5 mins old
 
     Args:
@@ -65,7 +66,10 @@ async def drone_update(sid: str, data: dict) -> None:
 
 
 def process_drone_update(data: dict) -> None:
-    """Handles the synchronous processing of the drone update."""
+    """
+    Handles the synchronous processing of the drone update
+    Saves the telemetry data to the database and deletes records over 5 mins old
+    """
     from drone.models import DroneTelemetry
     from drone.serializers import DroneTelemetrySerializer
 
