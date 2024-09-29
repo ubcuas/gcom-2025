@@ -9,12 +9,14 @@ https://docs.djangoproject.com/en/5.0/howto/deployment/asgi/
 
 import os
 import socketio
+import django
 
 from channels.routing import ProtocolTypeRouter
 from django.core.asgi import get_asgi_application
 from websocket.sockets import sio
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gcom.settings")
+django.setup()
 django_asgi_app = get_asgi_application()
 
 application = ProtocolTypeRouter(

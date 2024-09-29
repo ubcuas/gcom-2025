@@ -46,4 +46,3 @@ jobs:
       - name: Run Django tests
         shell: bash
         run: poetry run python src/manage.py test
-
