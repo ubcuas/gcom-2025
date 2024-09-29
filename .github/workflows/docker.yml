@@ -1,4 +1,4 @@
-name: Upload Docker Image as Artifact
+name: Upload Docker Image to GitHub Container Registry
 
 on:
   pull_request:
@@ -16,14 +16,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Log in to GitHub Container Registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
     - name: Build Docker image
-      run: docker build -t gcom-2025 .
+      run: docker build -t ghcr.io/${{ github.repository }}/gcom-2025:latest .
 
-    - name: Save Docker image to file
-      run: docker save gcom-2025 -o gcom-2025.tar
-
-    - name: Upload Docker image as artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: GCOM-2025
-        path: gcom-2025.tar
+    - name: Push Docker image to GitHub Container Registry
+      run: docker push ghcr.io/${{ github.repository }}/gcom-2025:latest

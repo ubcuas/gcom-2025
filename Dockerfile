@@ -16,31 +16,37 @@ ENV PYTHONPATH=${PYTHONPATH}:${PWD}
 
 RUN pip3 install poetry \
     && poetry config virtualenvs.create false \
-    && poetry install --no-dev
+    && poetry install --only main
 
-RUN echo "[supervisord]" > /etc/supervisor/supervisord.conf && \
-    echo "nodaemon=true" >> /etc/supervisor/supervisord.conf && \
-    echo "[program:redis]" >> /etc/supervisor/supervisord.conf && \
-    echo "command=redis-server" >> /etc/supervisor/supervisord.conf && \
-    echo "autostart=true" >> /etc/supervisor/supervisord.conf && \
-    echo "autorestart=true" >> /etc/supervisor/supervisord.conf && \
-    echo "stdout_logfile=/var/log/supervisor/redis_stdout.log" >> /etc/supervisor/supervisord.conf && \
-    echo "stderr_logfile=/var/log/supervisor/redis_stderr.log" >> /etc/supervisor/supervisord.conf && \
-    echo "[program:server]" >> /etc/supervisor/supervisord.conf && \
-    echo "command=poetry run python server.py" >> /etc/supervisor/supervisord.conf && \
-    echo "directory=/src" >> /etc/supervisor/supervisord.conf && \
-    echo "autostart=true" >> /etc/supervisor/supervisord.conf && \
-    echo "autorestart=true" >> /etc/supervisor/supervisord.conf && \
-    echo "stdout_logfile=/var/log/supervisor/server_stdout.log" >> /etc/supervisor/supervisord.conf && \
-    echo "stderr_logfile=/var/log/supervisor/server_stderr.log" >> /etc/supervisor/supervisord.conf && \
-    echo "[program:celery]" >> /etc/supervisor/supervisord.conf && \
-    echo "command=poetry run python -m celery -A gcom worker" >> /etc/supervisor/supervisord.conf && \
-    echo "directory=/src" >> /etc/supervisor/supervisord.conf && \
-    echo "autostart=true" >> /etc/supervisor/supervisord.conf && \
-    echo "autorestart=true" >> /etc/supervisor/supervisord.conf && \
-    echo "stdout_logfile=/var/log/supervisor/celery_stdout.log" >> /etc/supervisor/supervisord.conf && \
-    echo "stderr_logfile=/var/log/supervisor/celery_stderr.log" >> /etc/supervisor/supervisord.conf
+RUN cat <<EOF > /etc/supervisor/supervisord.conf
+[supervisord]
+nodaemon=true
+
+[program:redis]
+command=redis-server
+autostart=true
+autorestart=true
+stdout_logfile=/var/log/supervisor/redis_stdout.log
+stderr_logfile=/var/log/supervisor/redis_stderr.log
+
+[program:server]
+command=poetry run python server.py
+directory=/src
+autostart=true
+autorestart=true
+stdout_logfile=/var/log/supervisor/server_stdout.log
+stderr_logfile=/var/log/supervisor/server_stderr.log
+
+[program:celery]
+command=poetry run python -m celery -A gcom worker
+directory=/src
+autostart=true
+autorestart=true
+stdout_logfile=/var/log/supervisor/celery_stdout.log
+stderr_logfile=/var/log/supervisor/celery_stderr.log
+EOF
 
 EXPOSE 6379
+EXPOSE 8000
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
