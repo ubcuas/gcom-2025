@@ -24,7 +24,7 @@ class Image(models.Model):
         VISIBLE = 'visible', 'Visible'
         THERMAL = 'thermal', 'Thermal'
     
-    image = models.ImageField(upload_to='images/', null=False)
+    image = models.ImageField(upload_to='files/', null=False)
     title = models.CharField(max_length=100)
     image_type = models.CharField(max_length=20, 
                                   choices=ImageType.choices, 
