@@ -27,7 +27,7 @@ from images.views import ImageViewset
 
 router = DefaultRouter()
 router.register(r"waypoint", WaypointViewset, basename="waypoint")
-router.register(r'images', ImageViewset, basename='images')
+router.register(r"images", ImageViewset, basename="images")
 
 urlpatterns = [
     # Swagger Docs

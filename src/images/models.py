@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 class Image(models.Model):
     """Represents an image taken by the drone.
@@ -21,21 +22,19 @@ class Image(models.Model):
             VISIBLE: A visible light image.
             THERMAL: A thermal (IR) image.
         """
-        VISIBLE = 'visible', 'Visible'
-        THERMAL = 'thermal', 'Thermal'
-    
-    image = models.ImageField(upload_to='files/', null=False)
+
+        VISIBLE = "visible", "Visible"
+        THERMAL = "thermal", "Thermal"
+
+    image = models.ImageField(upload_to="files/", null=False)
     title = models.CharField(max_length=100)
-    image_type = models.CharField(max_length=20, 
-                                  choices=ImageType.choices, 
-                                  default=ImageType.VISIBLE)
+    image_type = models.CharField(
+        max_length=20, choices=ImageType.choices, default=ImageType.VISIBLE
+    )
     taken_at = models.DateTimeField(null=False)
     longitude = models.FloatField(null=True)
     latitude = models.FloatField(null=True)
     altitude = models.FloatField(null=True)
 
-    
     def __str__(self):
-        return self.taken_at.strftime('%Y-%m-%d %H:%M:%S')
-
-    
+        return self.taken_at.strftime("%Y-%m-%d %H:%M:%S")
