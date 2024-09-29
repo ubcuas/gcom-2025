@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from typing import Any, List, Mapping
 from asgiref.sync import sync_to_async
 import socketio
@@ -38,7 +38,7 @@ async def log_message(sid: str, *args: List[str]) -> None:
     print(f"[SOCKET] Message from {sid}: {args}")
 
 
-@sio.on('ping')
+@sio.on("ping")
 async def ping(sid: str) -> None:
     """Runs whenever a client pings the server and emits a 'pong' event in response
 
@@ -49,7 +49,7 @@ async def ping(sid: str) -> None:
     await sio.emit("pong", room=sid)
 
 
-@sio.on('drone_update')
+@sio.on("drone_update")
 async def drone_update(sid: str, data: dict) -> None:
     """
     Runs whenever the drone telemetry data is received
@@ -79,6 +79,5 @@ def process_drone_update(data: dict) -> None:
     telemetry.save()
 
     cutoff_time = (datetime.now() - timedelta(minutes=5)).timestamp()
-    old_records = DroneTelemetry.objects.filter(
-        timestamp__lt=int(cutoff_time))
+    old_records = DroneTelemetry.objects.filter(timestamp__lt=int(cutoff_time))
     old_records.delete()
