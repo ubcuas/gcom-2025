@@ -8,8 +8,8 @@
 ## Running the Server
 **If you are on Windows, you will need to run this whole project in WSL**
 1. Start Redis Server (if not already running): `redis-server`
-2. Start GCOM: `poetry run python server.py`
-3. Start Celery Worker: `poetry run python -m celery -A gcom worker`
+2. Start GCOM: `poetry run python server.py` (in `/src`)
+3. Start Celery Worker: `poetry run python -m celery -A gcom worker` (in `/src`)
 
 ## Major Dependencies 
 ### Overview
