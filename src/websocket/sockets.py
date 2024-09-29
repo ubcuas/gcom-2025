@@ -70,11 +70,11 @@ def process_drone_update(data: dict) -> None:
     from drone.serializers import DroneTelemetrySerializer
 
     telemetry = DroneTelemetrySerializer(data=data)
+    telemetry.is_valid(raise_exception=True)
 
-    if telemetry.is_valid():
-        telemetry.save()
+    telemetry.save()
 
-        cutoff_time = (datetime.now() - timedelta(minutes=5)).timestamp()
-        old_records = DroneTelemetry.objects.filter(
-            timestamp__lt=int(cutoff_time))
-        old_records.delete()
+    cutoff_time = (datetime.now() - timedelta(minutes=5)).timestamp()
+    old_records = DroneTelemetry.objects.filter(
+        timestamp__lt=int(cutoff_time))
+    old_records.delete()
