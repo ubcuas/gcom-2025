@@ -39,7 +39,7 @@ async def log_message(sid: str, *args: List[str]) -> None:
 
 
 @sio.on("ping")
-async def ping(sid: str) -> None:
+async def ping(sid: str, _: dict = {}) -> None:
     """Runs whenever a client pings the server and emits a 'pong' event in response
 
     Args:
