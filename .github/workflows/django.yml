@@ -17,10 +17,10 @@ jobs:
       DJANGO_SETTINGS_MODULE: gcom.settings
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
@@ -33,12 +33,6 @@ jobs:
         run: |
           poetry config virtualenvs.create true --local
           poetry config virtualenvs.in-project true --local
-
-      - uses: actions/cache@v3
-        name: Create cache
-        with:
-          path: ./.venv
-          key: venv-${{ hashFiles('poetry.lock') }}
 
       - name: Install the project dependencies
         run: poetry install
