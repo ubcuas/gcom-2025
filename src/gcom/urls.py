@@ -23,9 +23,11 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 
 from nav.views import WaypointViewset
+from images.views import ImageViewset
 
 router = DefaultRouter()
 router.register(r"waypoint", WaypointViewset, basename="waypoint")
+router.register(r"images", ImageViewset, basename="images")
 
 urlpatterns = [
     # Swagger Docs
