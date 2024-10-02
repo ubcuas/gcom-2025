@@ -15,6 +15,7 @@ jobs:
 
     env:
       DJANGO_SETTINGS_MODULE: gcom.settings
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -29,16 +30,17 @@ jobs:
         with:
           poetry-version: '1.8.2'
 
-      - name: Setup virtual environment
+      - name: Install the project dependencies
+        working-directory: ./src
         run: |
           poetry config virtualenvs.create true --local
-          poetry config virtualenvs.in-project true --local
+          poetry install
 
-      - name: Install the project dependencies
-        run: poetry install
+      - name: Verify Django Installation
+        working-directory: ./src
+        run: poetry run python -m django --version
 
       - name: Run Django tests
         shell: bash
         working-directory: ./src
-        run:
-          poetry run python manage.py test
+        run: poetry run python manage.py test
