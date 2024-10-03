@@ -25,7 +25,7 @@ jobs:
         password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
     - name: Build Docker image
-      run: docker build -t $${{ secrets.DOCKER_HUB_USER }}/gcom-2025:${{ github.sha }} .
+      run: docker build -t ${{ secrets.DOCKER_HUB_USER }}/gcom-2025:${{ github.sha }} .
 
     - name: Tag Docker image as latest
       run: docker tag ${{ secrets.DOCKER_HUB_USER }}/$REPO_NAME:${{ github.sha }} ${{ secrets.DOCKER_HUB_USER }}/$REPO_NAME:latest
