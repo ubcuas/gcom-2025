@@ -4,9 +4,11 @@ on:
   pull_request:
     branches:
       - main
+      - release
   push:
     branches:
       - main
+      - release
 
 jobs:
   build:
@@ -27,9 +29,18 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_USER }}
         password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-    - name: Build and Push
+    - name: Build and Push (Release Branch)
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/')
+      uses: docker/build-push-action@v6
+      with:
+        platforms: linux/amd64, linux/arm64
+        push: true
+        tags: ubcuas/${{ github.event.repository.name }}:latest
+
+    - name: Build (Non-Release Branch)
+      if: github.ref != 'refs/heads/release/*'
       uses: docker/build-push-action@v6
       with:
         platforms: linux/amd64,linux/arm64
-        push: true
+        push: false
         tags: ubcuas/${{ github.event.repository.name }}:latest
