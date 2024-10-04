@@ -34,3 +34,4 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name == 'push' }}
           tags: ubcuas/${{ github.event.repository.name }}:latest
+
