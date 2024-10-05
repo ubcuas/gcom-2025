@@ -1,2 +1,5 @@
 *.sqlite3
 *.pyc
+
+.gitignore
+dump.rdb

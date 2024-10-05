@@ -10,4 +10,4 @@ class BoundaryPointSerializer(serializers.Serializer):
 
 class AreaOfInterestSerializer(serializers.Serializer):
     """stores the structure of area of interest for verification"""
-    area_of_interest = serializers.ListField(child=BoundaryPointSerializer, required=True, min_length=4, max_length=4)
+    area_of_interest = serializers.ListField(child=BoundaryPointSerializer(), required=True, min_length=4, max_length=4)
