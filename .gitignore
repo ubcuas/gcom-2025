@@ -2,3 +2,5 @@
 *.pyc
 /.idea
 files/
+
+dump.rdb
