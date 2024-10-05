@@ -1,5 +1,6 @@
 from django.test import TestCase
 from .models import Waypoint
+from rest_framework.test import APITestCase
 
 class WaypointModelTest(TestCase):
     def setUp(self):
@@ -52,3 +53,46 @@ class WaypointModelTest(TestCase):
                 longitude=0,
                 altitude=None
             )
+
+class WaypointEndpointTests(APITestCase):
+    def setUp(self):
+        Waypoint.objects.create(
+            name="Test Waypoint",
+            latitude=0,
+            longitude=0,
+            altitude=0
+        )
+
+    def test_get_waypoint(self):
+        response = self.client.get("/api/waypoint/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["name"], "Test Waypoint")
+
+    def test_create_waypoint(self):
+        response = self.client.post("/api/waypoint/", {
+            "name": "Test Waypoint 2",
+            "latitude": 0,
+            "longitude": 0,
+            "altitude": 0
+        })
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Waypoint.objects.count(), 2)
+        self.assertEqual(Waypoint.objects.get(name="Test Waypoint 2").name, "Test Waypoint 2")
+
+    def test_update_waypoint(self):
+        uuid = Waypoint.objects.get(name="Test Waypoint").id
+        response = self.client.put(f"/api/waypoint/{uuid}/", {
+            "name": "Updated Waypoint",
+            "latitude": 0,
+            "longitude": 0,
+            "altitude": 0
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Waypoint.objects.get(id=uuid).name, "Updated Waypoint")
+
+    def test_delete_waypoint(self):
+        uuid = Waypoint.objects.get(name="Test Waypoint").id
+        response = self.client.delete(f"/api/waypoint/{uuid}/")
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(Waypoint.objects.count(), 0)
