@@ -14,16 +14,16 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-
 from django.contrib import admin
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-
+from django.urls import include
+from django.urls import path
+from drf_spectacular.views import SpectacularAPIView
+from drf_spectacular.views import SpectacularSwaggerView
+from images.views import ImageViewset
+from rest_framework.routers import DefaultRouter
 
 from nav.views import WaypointViewset
-from images.views import ImageViewset
 
 router = DefaultRouter()
 router.register(r"waypoint", WaypointViewset, basename="waypoint")
@@ -42,6 +42,7 @@ urlpatterns = [
     # API
     path("api/", include(router.urls)),
     path("api/drone/", include("drone.urls")),
+    path("api/images/", include("images.urls")),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
