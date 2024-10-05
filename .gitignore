@@ -1,5 +1,6 @@
 *.sqlite3
 *.pyc
+/.idea
+files/
 
-.gitignore
 dump.rdb
