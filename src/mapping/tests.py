@@ -1,6 +1,6 @@
 from django.test import TestCase
+from .serializers import AreaOfInterestSerializer
 from .views import post_area_of_interest
-from .views import AreaOfInterestSerializer
 from rest_framework.test import APITestCase
 from django.test.client import RequestFactory
 import json
@@ -18,7 +18,7 @@ class AreaOfInterestValidationTest(TestCase):
                 {"latitude": 1, "longitude": 1, "altitude": 1},
                 {"latitude": 1, "longitude": 1, "altitude": 1},
                 {"latitude": 1, "longitude": 1, "altitude": 1},
-                {"latitude": 1, "longitude": 1, "altitude": 1}
+                {"latitude": 1, "longitude": 1, "altitude": 1},
             ]
         }
         valid_ser = AreaOfInterestSerializer(data=test_object)
@@ -31,26 +31,21 @@ class AreaOfInterestValidationTest(TestCase):
                 {"latitude": 1, "longitude": 1},
                 {"latitude": 1, "longitude": 1},
                 {"latitude": 1, "longitude": 1},
-                {"latitude": 1, "longitude": 1}
+                {"latitude": 1, "longitude": 1},
             ]
         }
         valid_ser = AreaOfInterestSerializer(data=test_object)
-        if valid_ser.is_valid():
-            print(valid_ser.validated_data["area_of_interest"][0])
         self.assertEqual(valid_ser.is_valid(), True)
 
     def test_missing_attribute(self):
 
         # test for missing area_of_interest
-        test_object = {
-        }
+        test_object = {}
         valid_ser = AreaOfInterestSerializer(data=test_object)
         self.assertEqual(valid_ser.is_valid(), False)
 
         # test for null area_of_interest
-        test_object = {
-            "area_of_interest": None
-        }
+        test_object = {"area_of_interest": None}
         valid_ser = AreaOfInterestSerializer(data=test_object)
         self.assertEqual(valid_ser.is_valid(), False)
 
@@ -60,7 +55,7 @@ class AreaOfInterestValidationTest(TestCase):
                 {"longitude": 1, "altitude": 1},
                 {"latitude": 1, "longitude": 1, "altitude": 1},
                 {"latitude": 1, "longitude": 1, "altitude": 1},
-                {"latitude": 1, "longitude": 1, "altitude": 1}
+                {"latitude": 1, "longitude": 1, "altitude": 1},
             ]
         }
         valid_ser = AreaOfInterestSerializer(data=test_object)
@@ -74,7 +69,7 @@ class AreaOfInterestValidationTest(TestCase):
                 {"latitude": 1, "longitude": 1, "altitude": None},
                 {"latitude": 1, "longitude": 1, "altitude": 1},
                 {"latitude": 1, "longitude": 1, "altitude": 1},
-                {"latitude": 1, "longitude": 1, "altitude": 1}
+                {"latitude": 1, "longitude": 1, "altitude": 1},
             ]
         }
         valid_ser = AreaOfInterestSerializer(data=test_object)
@@ -87,7 +82,7 @@ class AreaOfInterestValidationTest(TestCase):
                 {"latitude": 1, "longitude": 1, "altitude": 1},
                 {"latitude": 1, "longitude": 1, "altitude": 1},
                 {"latitude": 1, "longitude": 1, "altitude": 1},
-                {"latitude": 1, "longitude": 1, "altitude": 1}
+                {"latitude": 1, "longitude": 1, "altitude": 1},
             ]
         }
         valid_ser = AreaOfInterestSerializer(data=test_object)
@@ -98,7 +93,7 @@ class AreaOfInterestValidationTest(TestCase):
             "area_of_interest": [
                 {"latitude": 1, "longitude": 1, "altitude": 1},
                 {"latitude": 1, "longitude": 1, "altitude": 1},
-                {"latitude": 1, "longitude": 1, "altitude": 1}
+                {"latitude": 1, "longitude": 1, "altitude": 1},
             ]
         }
         valid_ser = AreaOfInterestSerializer(data=test_object)
@@ -109,16 +104,20 @@ class AreaOfInterestEndpointTest(APITestCase):
     def setUp(self):
         pass
 
-    def post_area_of_interest(self):
+    def test_post_area_of_interest(self):
         test_object = {
             "area_of_interest": [
                 {"latitude": 1, "longitude": 1, "altitude": 1},
                 {"latitude": 1, "longitude": 1, "altitude": 1},
                 {"latitude": 1, "longitude": 1, "altitude": 1},
-                {"latitude": 1, "longitude": 1, "altitude": 1}
+                {"latitude": 1, "longitude": 1, "altitude": 1},
             ]
         }
 
-        response = self.client.get("/api/waypoint/area_of_interest", json.dumps(test_object))
+        response = self.client.post(
+            "/api/mapping/area_of_interest",
+            json.dumps(test_object),
+            content_type="application/json"
+        )
 
         self.assertEqual(response.status_code, 200)
