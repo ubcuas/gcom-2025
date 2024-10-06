@@ -1,10 +1,17 @@
 from rest_framework import serializers
-from .models import Waypoint
+from .models import OrderedWaypoint, Route 
 
 
-class WaypointSerializer(serializers.ModelSerializer):
+class OrderedWaypointSerializer(serializers.ModelSerializer):
     """Serializer to convert Waypoint objects to JSON"""
 
     class Meta:
-        model = Waypoint
-        fields = "__all__"
+        model = OrderedWaypoint
+        fields = '__all__'
+
+class RouteSerializer(serializers.ModelSerializer):
+    """Serializer to convert Route objects to JSON"""
+
+    class Meta:
+        model = Route
+        fields = '__all__'
