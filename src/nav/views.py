@@ -7,7 +7,7 @@ from .serializers import RouteSerializer, OrderedWaypointSerializer
 class OrderedWaypointViewset(viewsets.ModelViewSet):
     """Viewset for CRUD operations on Waypoints"""
 
-    queryset = Waypoint.objects.all()
+    queryset = OrderedWaypoint.objects.all()
     serializer_class = OrderedWaypointSerializer
 
     def get_serializer(self, *args, **kwargs):
