@@ -7,21 +7,34 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('nav', '0001_initial'),
+        ("nav", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Route',
+            name="Route",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=32)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=32)),
             ],
         ),
         migrations.AddField(
-            model_name='waypoint',
-            name='route',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='waypoints', to='nav.route'),
+            model_name="waypoint",
+            name="route",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="waypoints",
+                to="nav.route",
+            ),
             preserve_default=False,
         ),
     ]
