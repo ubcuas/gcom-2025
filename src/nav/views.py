@@ -23,7 +23,7 @@ class OrderedWaypointViewset(viewsets.ModelViewSet):
 class RoutesViewset(viewsets.ModelViewSet):
     """Viewset for CRUD operations on Routes"""
 
-    queryset = Route.objects.all()
+    queryset = Route.objects.all().prefetch_related("waypoints")
     serializer_class = RouteSerializer
 
     @action(detail=True, methods=["post"], url_path="reorder-waypoints")
@@ -56,7 +56,7 @@ class RoutesViewset(viewsets.ModelViewSet):
                 waypoint.save()
             except OrderedWaypoint.DoesNotExist:
                 return Response(
-                    {"error": f"Waypoint {waypoint_id} not found"},
+                    {"error": f"Waypoint with  not found with id: {waypoint_id}"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 

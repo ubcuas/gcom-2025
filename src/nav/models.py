@@ -33,8 +33,6 @@ class Waypoint(models.Model):
     longitude = models.FloatField(null=False)
     altitude = models.FloatField()
 
-    route = models.ForeignKey(Route, related_name="waypoints", on_delete=models.CASCADE)
-
     # Enums
     class PassOptions(models.IntegerChoices):
         """Defines the ways in which the drone can pass through the waypoint
@@ -67,3 +65,4 @@ class OrderedWaypoint(Waypoint):
     """
 
     order = models.IntegerField(null=False)
+    route = models.ForeignKey(Route, related_name="waypoints", on_delete=models.CASCADE)

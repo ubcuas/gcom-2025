@@ -7,12 +7,15 @@ class OrderedWaypointSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderedWaypoint
+        ordering = ["order"]
         fields = "__all__"
 
 
 class RouteSerializer(serializers.ModelSerializer):
     """Serializer to convert Route objects to JSON"""
 
+    waypoints = OrderedWaypointSerializer(many=True, read_only=True)
+
     class Meta:
         model = Route
-        fields = "__all__"
+        fields = ["id", "name", "waypoints"]
