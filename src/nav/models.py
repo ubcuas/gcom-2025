@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 
+
 class Route(models.Model):
     """Describes a route in GCOM
 
@@ -10,6 +11,7 @@ class Route(models.Model):
     """
 
     name = models.CharField(max_length=32)
+
 
 class Waypoint(models.Model):
     """Describes a position in GCOM

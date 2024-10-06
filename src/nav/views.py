@@ -15,7 +15,8 @@ class OrderedWaypointViewset(viewsets.ModelViewSet):
             kwargs["many"] = True
 
         return super(OrderedWaypointViewset, self).get_serializer(*args, **kwargs)
-    
+
+
 class RoutesViewset(viewsets.ModelViewSet):
     """Viewset for CRUD operations on Routes"""
 
