@@ -1,8 +1,6 @@
 from django.test import TestCase
 from .serializers import AreaOfInterestSerializer
-from .views import post_area_of_interest
 from rest_framework.test import APITestCase
-from django.test.client import RequestFactory
 import json
 
 
@@ -117,7 +115,7 @@ class AreaOfInterestEndpointTest(APITestCase):
         response = self.client.post(
             "/api/mapping/area_of_interest",
             json.dumps(test_object),
-            content_type="application/json"
+            content_type="application/json",
         )
 
         self.assertEqual(response.status_code, 200)
