@@ -57,8 +57,6 @@ class AreaOfInterestValidationTest(TestCase):
             ]
         }
         valid_ser = AreaOfInterestSerializer(data=test_object)
-        if valid_ser.is_valid():
-            print(valid_ser.validated_data["area_of_interest"][0])
         self.assertEqual(valid_ser.is_valid(), False)
 
         # test for null altitude
@@ -102,20 +100,85 @@ class AreaOfInterestEndpointTest(APITestCase):
     def setUp(self):
         pass
 
-    def test_post_area_of_interest(self):
+    def test_post_n_get_area_of_interest(self):
+        # test post
         test_object = {
             "area_of_interest": [
-                {"latitude": 1, "longitude": 1, "altitude": 1},
-                {"latitude": 1, "longitude": 1, "altitude": 1},
-                {"latitude": 1, "longitude": 1, "altitude": 1},
-                {"latitude": 1, "longitude": 1, "altitude": 1},
+                {"latitude": 1, "longitude": 2, "altitude": 3},
+                {"latitude": 4, "longitude": 5, "altitude": 6},
+                {"latitude": 7, "longitude": 8, "altitude": 9},
+                {"latitude": 10, "longitude": 11, "altitude": 12},
             ]
         }
 
-        response = self.client.post(
+        post_response = self.client.post(
             "/api/mapping/area_of_interest",
             json.dumps(test_object),
             content_type="application/json",
         )
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(post_response.status_code, 200)
+
+        # test get
+        get_response = self.client.get(
+            "/api/mapping/area_of_interest",
+        )
+
+        returned_object = json.loads(get_response.content)
+
+        # test correct data is saved
+        self.assertEqual(get_response.status_code, 200)
+
+        self.assertEqual(returned_object["area_of_interest"][0]["latitude"], 1)
+        self.assertEqual(returned_object["area_of_interest"][0]["longitude"], 2)
+        self.assertEqual(returned_object["area_of_interest"][0]["altitude"], 3)
+        self.assertEqual(returned_object["area_of_interest"][1]["latitude"], 4)
+        self.assertEqual(returned_object["area_of_interest"][1]["longitude"], 5)
+        self.assertEqual(returned_object["area_of_interest"][1]["altitude"], 6)
+        self.assertEqual(returned_object["area_of_interest"][2]["latitude"], 7)
+        self.assertEqual(returned_object["area_of_interest"][2]["longitude"], 8)
+        self.assertEqual(returned_object["area_of_interest"][2]["altitude"], 9)
+        self.assertEqual(returned_object["area_of_interest"][3]["latitude"], 10)
+        self.assertEqual(returned_object["area_of_interest"][3]["longitude"], 11)
+        self.assertEqual(returned_object["area_of_interest"][3]["altitude"], 12)
+
+        # test overide
+        test_object = {
+            "area_of_interest": [
+                {"latitude": 2, "longitude": 2},
+                {"latitude": 2, "longitude": 2},
+                {"latitude": 2, "longitude": 2},
+                {"latitude": 2, "longitude": 2},
+            ]
+        }
+
+        post_response = self.client.post(
+            "/api/mapping/area_of_interest",
+            json.dumps(test_object),
+            content_type="application/json",
+        )
+
+        self.assertEqual(post_response.status_code, 200)
+
+        # test get
+        get_response = self.client.get(
+            "/api/mapping/area_of_interest",
+        )
+
+        returned_object = json.loads(get_response.content)
+
+        # test correct data is saved
+        self.assertEqual(get_response.status_code, 200)
+
+        self.assertEqual(returned_object["area_of_interest"][0]["latitude"], 2)
+        self.assertEqual(returned_object["area_of_interest"][0]["longitude"], 2)
+        self.assertEqual(returned_object["area_of_interest"][1]["latitude"], 2)
+        self.assertEqual(returned_object["area_of_interest"][1]["longitude"], 2)
+        self.assertEqual(returned_object["area_of_interest"][2]["latitude"], 2)
+        self.assertEqual(returned_object["area_of_interest"][2]["longitude"], 2)
+        self.assertEqual(returned_object["area_of_interest"][3]["latitude"], 2)
+        self.assertEqual(returned_object["area_of_interest"][3]["longitude"], 2)
+        self.assertFalse("altitude" in returned_object["area_of_interest"][0])
+        self.assertFalse("altitude" in returned_object["area_of_interest"][1])
+        self.assertFalse("altitude" in returned_object["area_of_interest"][2])
+        self.assertFalse("altitude" in returned_object["area_of_interest"][3])

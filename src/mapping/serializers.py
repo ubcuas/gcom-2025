@@ -5,8 +5,8 @@ class BoundaryPointSerializer(serializers.Serializer):
     """stores the structure of boundary point for verification"""
 
     latitude = serializers.FloatField(required=True)
-    longitude = serializers.CharField(required=True)
-    altitude = serializers.IntegerField(required=False)
+    longitude = serializers.FloatField(required=True)
+    altitude = serializers.FloatField(required=False)
 
 
 class AreaOfInterestSerializer(serializers.Serializer):
