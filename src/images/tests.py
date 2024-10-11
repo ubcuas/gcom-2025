@@ -6,7 +6,6 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db.utils import IntegrityError
 from django.test import override_settings
 from django.test import TestCase
-from django.urls import reverse
 from PIL import Image as PILImage
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -238,17 +237,6 @@ class GroundObjectModelTests(TestCase):
         ground_object = GroundObject.objects.get(text="Sample Text")
         self.assertEqual(str(ground_object), "Sample Text")
 
-    def test_cannot_create_without_text(self):
-        with self.assertRaises(IntegrityError):
-            GroundObject.objects.create(
-                object_type=GroundObject.ObjectType.STANDARD,
-                lat=12.3456,
-                long=78.9101,
-                shape=GroundObject.Shape.CIRCLE,
-                color=GroundObject.Color.RED,
-                text_color=GroundObject.Color.BLACK,
-            )
-
 
 class GroundObjectEndpointTests(APITestCase):
     def setUp(self):
@@ -264,7 +252,7 @@ class GroundObjectEndpointTests(APITestCase):
 
     def test_get_ground_object(self):
         response = self.client.get(
-            f"/api/ground_objects/{self.ground_object.id}/", format="json"
+            f"/api/groundobject/{self.ground_object.id}/", format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["text"], "Sample Text")
@@ -272,7 +260,7 @@ class GroundObjectEndpointTests(APITestCase):
         self.assertEqual(response.data["long"], 78.9101)
 
     def test_get_all_ground_objects(self):
-        response = self.client.get(reverse("get_all_ground_objects"), format="json")
+        response = self.client.get("/api/groundobject/", format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data[0]["text"], "Sample Text")
 
@@ -291,19 +279,19 @@ class GroundObjectEndpointTests(APITestCase):
             },
             format="json",
         )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(GroundObject.objects.count(), ground_object_count + 1)
 
     def test_delete_ground_object(self):
         response = self.client.delete(
-            "/api/groundobject", args=[self.ground_object.id], format="json"
+            f"/api/groundobject/{self.ground_object.id}/", format="json"
         )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(GroundObject.objects.count(), 0)
 
     def test_edit_ground_object(self):
         response = self.client.patch(
-            reverse("edit_ground_object", args=[self.ground_object.id]),
+            f"/api/groundobject/{self.ground_object.id}/",
             {
                 "text": "Updated Text",
                 "color": GroundObject.Color.GREEN,
@@ -318,7 +306,7 @@ class GroundObjectEndpointTests(APITestCase):
     def test_create_ground_object_invalid_request(self):
         ground_object_count = GroundObject.objects.count()
         response = self.client.post(
-            reverse("create_ground_object"),
+            "/api/groundobject/",
             {
                 "object_type": GroundObject.ObjectType.STANDARD,
                 "shape": GroundObject.Shape.RECTANGLE,

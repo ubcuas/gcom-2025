@@ -81,7 +81,7 @@ class GroundObject(models.Model):
         CROSS = "cross", _("Cross")
 
     id = models.UUIDField(
-        primary_key=True, editable=False, unique=True, default=uuid.uuid4()
+        primary_key=True, editable=False, unique=True, default=uuid.uuid4
     )
     object_type = models.CharField(
         max_length=10, choices=ObjectType.choices, default=ObjectType.STANDARD
@@ -94,9 +94,13 @@ class GroundObject(models.Model):
     color = models.CharField(
         null=False, max_length=10, choices=Color.choices, default=Color.BLACK
     )
-    text = models.CharField(max_length=100, null=False, blank=True)
+    text = models.CharField(max_length=100, null=False, blank=False)
     text_color = models.CharField(
-        max_length=10, choices=Color.choices, default=Color.BLACK, null=False
+        max_length=10,
+        choices=Color.choices,
+        default=Color.BLACK,
+        null=False,
+        blank=False,
     )
 
     def __str__(self):
