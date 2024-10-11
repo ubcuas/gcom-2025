@@ -1,7 +1,6 @@
 import json
 import shutil
 from io import BytesIO
-
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db.utils import IntegrityError
 from django.test import override_settings
@@ -9,7 +8,6 @@ from django.test import TestCase
 from PIL import Image as PILImage
 from rest_framework import status
 from rest_framework.test import APITestCase
-
 from .models import GroundObject
 from .models import Image
 
