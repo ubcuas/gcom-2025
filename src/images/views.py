@@ -22,7 +22,7 @@ class GroundObjectViewset(viewsets.ModelViewSet):
     """Viewset for CRUD operations on GroundObjects"""
 
     queryset = GroundObject.objects.all()
-    serializer_class = GroundObject
+    serializer_class = GroundObjectSerializer
 
 
 # CreateGroundObject

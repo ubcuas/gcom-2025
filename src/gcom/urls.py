@@ -43,6 +43,7 @@ urlpatterns = [
     path("api/", include(router.urls)),
     path("api/drone/", include("drone.urls")),
     path("api/images/", include("images.urls")),
+    path("api/groundobject/", include("images.urls")),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
