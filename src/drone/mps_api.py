@@ -74,15 +74,9 @@ class DroneApiClient:
         )
 
     @staticmethod
-    def prepend(wp):
+    def insert(queue):
         return DroneApiClient._fetch_from_mission_planner(
-            "prepend", method="POST", data=wp
-        )
-
-    @staticmethod
-    def append(wp):
-        return DroneApiClient._fetch_from_mission_planner(
-            "append", method="POST", data=wp
+            "insert", method="POST", data=queue
         )
 
     @staticmethod
@@ -95,16 +89,6 @@ class DroneApiClient:
             "diversion",
             method="POST",
             data={"exclude": exclude_wps, "rejoin_at": rejoin_wp},
-        )
-
-    @staticmethod
-    def get_vtol_transition():
-        return DroneApiClient._fetch_from_mission_planner("vtol/transition")
-
-    @staticmethod
-    def post_vtol_transition(mode):
-        return DroneApiClient._fetch_from_mission_planner(
-            "vtol/transition", method="POST", data={"mode": mode}
         )
 
     @staticmethod

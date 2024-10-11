@@ -107,21 +107,10 @@ def post_home(request):
 
 @csrf_exempt
 @require_http_methods(["POST"])
-def prepend(request):
+def insert(request):
     try:
-        wp = json.loads(request.body)
-        response = DroneApiClient.prepend(wp)
-        return HttpResponse(status=response.status_code)
-    except (KeyError, ValueError, TypeError):
-        return JsonResponse({"error": "Invalid input"}, status=400)
-
-
-@csrf_exempt
-@require_http_methods(["POST"])
-def append(request):
-    try:
-        wp = json.loads(request.body)
-        response = DroneApiClient.append(wp)
+        queue = json.loads(request.body)
+        response = DroneApiClient.insert(queue)
         return HttpResponse(status=response.status_code)
     except (KeyError, ValueError, TypeError):
         return JsonResponse({"error": "Invalid input"}, status=400)
@@ -140,24 +129,6 @@ def diversion(request):
         exclude_wps = data.get("exclude")
         rejoin_wp = data.get("rejoin_at")
         response = DroneApiClient.diversion(exclude_wps, rejoin_wp)
-        return HttpResponse(status=response.status_code)
-    except (KeyError, ValueError, TypeError):
-        return JsonResponse({"error": "Invalid input"}, status=400)
-
-
-@require_http_methods(["GET"])
-def get_vtol_transition(request):
-    response = DroneApiClient.get_vtol_transition()
-    return JsonResponse(response.json(), safe=False, status=response.status_code)
-
-
-@csrf_exempt
-@require_http_methods(["POST"])
-def post_vtol_transition(request):
-    try:
-        data = json.loads(request.body)
-        mode = data.get("mode")
-        response = DroneApiClient.post_vtol_transition(mode)
         return HttpResponse(status=response.status_code)
     except (KeyError, ValueError, TypeError):
         return JsonResponse({"error": "Invalid input"}, status=400)

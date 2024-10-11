@@ -14,15 +14,7 @@ urlpatterns = [
     path("drone/queue", views.get_queue, name="get_queue"),
     path("drone/queue", views.post_queue, name="post_queue"),
     path("drone/home", views.post_home, name="post_home"),
-    path("drone/prepend", views.prepend, name="prepend"),
-    path("drone/append", views.append, name="append"),
     path("drone/clear", views.clear, name="clear"),
     path("drone/diversion", views.diversion, name="diversion"),
-    path(
-        "drone/vtol/transition", views.get_vtol_transition, name="get_vtol_transition"
-    ),
-    path(
-        "drone/vtol/transition", views.post_vtol_transition, name="post_vtol_transition"
-    ),
     path("drone/flightmode", views.flightmode, name="flight_mode"),
 ]
