@@ -23,7 +23,6 @@ from drf_spectacular.views import SpectacularSwaggerView
 from images.views import GroundObjectViewset
 from images.views import ImageViewset
 from rest_framework.routers import DefaultRouter
-
 from nav.views import WaypointViewset
 
 router = DefaultRouter()
