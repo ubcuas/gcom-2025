@@ -10,6 +10,7 @@ urlpatterns = [
     path("drone/rtl", views.get_rtl, name="rtl"),
     path("drone/rtl", views.post_rtl, name="rtl"),
     path("drone/lock", views.lock, name="lock"),
+    path("drone/insert", views.insert, name="insert"),
     path("drone/unlock", views.unlock, name="unlock"),
     path("drone/queue", views.get_queue, name="get_queue"),
     path("drone/queue", views.post_queue, name="post_queue"),
