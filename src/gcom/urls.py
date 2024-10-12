@@ -16,13 +16,13 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-
-
+from django.urls import include
+from django.urls import path
+from drf_spectacular.views import SpectacularAPIView
+from drf_spectacular.views import SpectacularSwaggerView
 from nav.views import WaypointViewset
+from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r"waypoint", WaypointViewset, basename="waypoint")
@@ -40,6 +40,8 @@ urlpatterns = [
     # API
     path("api/", include(router.urls)),
     path("api/drone/", include("drone.urls")),
+    path("api/mapping/", include("mapping.urls")),
+    path("api/vision/", include("vision.urls")),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

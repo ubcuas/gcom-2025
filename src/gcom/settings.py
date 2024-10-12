@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "nav.apps.NavConfig",
     "drone.apps.DroneConfig",
+    "mapping.apps.MappingConfig",
+    "vision.apps.VisionConfig",
 ]
 
 MIDDLEWARE = [
