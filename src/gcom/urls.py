@@ -40,6 +40,7 @@ urlpatterns = [
     # API
     path("api/", include(router.urls)),
     path("api/drone/", include("drone.urls")),
+    path("api/mapping/", include("mapping.urls")),
     path("api/vision/", include("vision.urls")),
 ]
 
