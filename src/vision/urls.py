@@ -5,7 +5,7 @@ from .views import GroundObjectViewset
 from .views import ImageViewset
 
 router = DefaultRouter()
-router.register(r"images", ImageViewset, basename="images")
+router.register(r"image", ImageViewset, basename="image")
 router.register(r"groundobject", GroundObjectViewset, basename="groundobject")
 
 urlpatterns = [

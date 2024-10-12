@@ -21,15 +21,11 @@ from django.urls import include
 from django.urls import path
 from drf_spectacular.views import SpectacularAPIView
 from drf_spectacular.views import SpectacularSwaggerView
-from images.views import GroundObjectViewset
-from images.views import ImageViewset
 from nav.views import WaypointViewset
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r"waypoint", WaypointViewset, basename="waypoint")
-router.register(r"images", ImageViewset, basename="images")
-router.register(r"groundobject", GroundObjectViewset, basename="groundobject")
 
 urlpatterns = [
     # Swagger Docs
@@ -44,7 +40,7 @@ urlpatterns = [
     # API
     path("api/", include(router.urls)),
     path("api/drone/", include("drone.urls")),
-    path("api/images/", include("images.urls")),
+    path("api/vision/", include("vision.urls")),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
