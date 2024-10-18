@@ -3,7 +3,7 @@ import json
 
 
 class DroneApiClient:
-    _mission_planner_api_url = "http://localhost:9001"
+    _mission_planner_api_url = "http://localhost:9000"
 
     @staticmethod
     def _fetch_from_mission_planner(endpoint, method="GET", data=None):
