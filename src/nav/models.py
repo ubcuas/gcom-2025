@@ -2,6 +2,17 @@ import uuid
 from django.db import models
 
 
+class Route(models.Model):
+    """Describes a route in GCOM
+
+    Attributes:
+        id: A unique identifier for the route
+        name: The name of the route
+    """
+
+    name = models.CharField(max_length=32)
+
+
 class Waypoint(models.Model):
     """Describes a position in GCOM
 
@@ -54,3 +65,4 @@ class OrderedWaypoint(Waypoint):
     """
 
     order = models.IntegerField(null=False)
+    route = models.ForeignKey(Route, related_name="waypoints", on_delete=models.CASCADE)
