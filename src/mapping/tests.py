@@ -1,7 +1,11 @@
 from django.test import TestCase
 from .serializers import AreaOfInterestSerializer
+from .tasks import stitch_images
 from rest_framework.test import APITestCase
 import json
+import os
+
+from django.conf import settings
 
 
 class AreaOfInterestValidationTest(TestCase):
@@ -182,3 +186,46 @@ class AreaOfInterestEndpointTest(APITestCase):
         self.assertFalse("altitude" in returned_object["area_of_interest"][1])
         self.assertFalse("altitude" in returned_object["area_of_interest"][2])
         self.assertFalse("altitude" in returned_object["area_of_interest"][3])
+
+
+class StitchTest(TestCase):
+
+    def test_UBC_forest(self):
+
+        input_directory = os.path.join(
+            settings.MEDIA_ROOT, "test", "image_stitching", "input"
+        )
+        output_file = os.path.join(
+            settings.MEDIA_ROOT, "test", "image_stitching", "output", "stitched.png"
+        )
+
+        # clean up old test output
+        if os.path.exists(output_file):
+            os.remove(output_file)
+            self.assertFalse(os.path.exists(output_file), "file deletion unsuccessful")
+
+        #
+        input_filenames = [
+            os.path.join(input_directory, f)
+            for f in os.listdir(input_directory)
+            if os.path.isfile(os.path.join(input_directory, f)) and "png" in f
+        ]
+
+        # synchronous test of asynchronous function.
+        # source https://celery.school/unit-testing-celery-tasks
+        task_succeed = stitch_images.s(output_file, input_filenames).apply()
+
+        # to call it synchronously
+        # future = stitch_images.delay(output_file, input_filenames)
+        # the piece of information that need to be saved.
+        # task_id = future.id
+        # to get the result back out
+        # task_succeed = AsyncResult(id=task_id).get(timeout=10)
+
+        self.assertTrue(
+            task_succeed, "stiching algorithum failed on image set previously tested"
+        )
+        self.assertTrue(
+            os.path.exists(output_file),
+            "task is claimed to be successful yet no file is created",
+        )
