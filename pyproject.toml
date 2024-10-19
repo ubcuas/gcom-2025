@@ -20,7 +20,6 @@ uvicorn = "^0.30.6"
 python-socketio = "^5.11.4"
 websockets = "^13.1"
 redis = "^5.0.8"
-asgiref = "^3.8.1"
 
 
 [build-system]
