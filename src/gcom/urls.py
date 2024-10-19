@@ -21,11 +21,12 @@ from django.urls import include
 from django.urls import path
 from drf_spectacular.views import SpectacularAPIView
 from drf_spectacular.views import SpectacularSwaggerView
-from nav.views import WaypointViewset
+from nav.views import RoutesViewset, OrderedWaypointViewset
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
-router.register(r"waypoint", WaypointViewset, basename="waypoint")
+router.register(r"route", RoutesViewset, basename="route")
+router.register(r"waypoint", OrderedWaypointViewset, basename="waypoint")
 
 urlpatterns = [
     # Swagger Docs
