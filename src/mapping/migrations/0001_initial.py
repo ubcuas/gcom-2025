@@ -35,14 +35,10 @@ class Migration(migrations.Migration):
                         primary_key=True,
                         serialize=False,
                         verbose_name="ID",
-                    )
+                    ),
                 ),
-                (
-                    ("points_on_route", models.JSONField()),
-                ),
-                (
-                    ("altitude", models.FloatField(null=False))
-                )
+                (("points_on_route", models.JSONField()),),
+                (("altitude", models.FloatField(null=False))),
             ],
         ),
     ]

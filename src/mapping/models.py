@@ -17,9 +17,10 @@ class AreaOfInterest(models.Model):
 class MappingRoute(models.Model):
     # fields
     # Stored list of points as arbitrary length JSON field to be consistent with area of interest
-    #altitude is how high the drone needs to be from ground when taking these pictures.
+    # altitude is how high the drone needs to be from ground when taking these pictures.
     points_on_route = models.JSONField()
     altitude = models.FloatField()
+
     # methods
     def save(self, **kwargs):
 
