@@ -15,3 +15,4 @@ class AreaOfInterestSerializer(serializers.Serializer):
     area_of_interest = serializers.ListField(
         child=BoundaryPointSerializer(), required=True, min_length=4, max_length=4
     )
+    

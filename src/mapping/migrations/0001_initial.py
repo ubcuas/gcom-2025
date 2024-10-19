@@ -25,4 +25,24 @@ class Migration(migrations.Migration):
                 ("area_of_interest", models.JSONField()),
             ],
         ),
+        migrations.CreateModel(
+            name="MappingRoute",
+            fields=[
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    )
+                ),
+                (
+                    ("points_on_route", models.JSONField()),
+                ),
+                (
+                    ("altitude", models.FloatField(null=False))
+                )
+            ],
+        ),
     ]
