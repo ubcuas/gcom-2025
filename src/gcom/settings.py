@@ -34,7 +34,6 @@ ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     "drf_spectacular",
-    "corsheaders",
     "daphne",
     "channels",
     "django.contrib.admin",
