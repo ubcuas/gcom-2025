@@ -1,6 +1,7 @@
 import json
 import os
 from django.http import FileResponse, HttpResponse, JsonResponse
+import gzip
 
 
 def serve_metadata(request):
@@ -76,14 +77,21 @@ def serve_tiles(_, z, x, y):
         f"{y}.pbf",
     )
 
+    print("tiles_path", tiles_path)
     if not os.path.exists(tiles_path):
-        print(tiles_path)
-        return JsonResponse({"message": "Tile not found"}, status=404)
+        response = FileResponse(
+            b"", content_type="application/x-protobuf", status=200  # or 204
+        )
+        return response
 
     try:
-        return FileResponse(
-            open(tiles_path, "rb"), content_type="application/x-protobuf"
+        with gzip.open(tiles_path, "rb") as f:
+            tile_data = f.read()
+        response = HttpResponse(
+            content=tile_data,
+            content_type="application/x-protobuf",
         )
+        return response
 
     except IOError:
         return JsonResponse({"message": "Error reading tile file"}, status=500)
