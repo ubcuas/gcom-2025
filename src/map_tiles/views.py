@@ -5,6 +5,10 @@ import gzip
 
 
 def serve_metadata(request):
+    """
+    Serves the mapbox gl metadata json file
+    Also adds in the tile url pattern so that it points to the correct endpoint
+    """
     metadata_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)), "metadata.json"
     )
@@ -18,7 +22,7 @@ def serve_metadata(request):
 
 def serve_style_json(request):
     """
-    Serve the osmbright style json file
+    Serve the mapbox gl style json file
     This file specifies map style layers and also points to
     the metadata file url and the font glyph url pattern
     """
@@ -42,8 +46,8 @@ def serve_style_json(request):
 
 def serve_glyphs(_, fontstack, fontrange):
     """
-    Serve glyph PBF files based on fontstack and fontrange.
-    These glyphs are just fonts encoded as binary pbf files
+    Serves glyph files from the map_fonts directory
+    These glyphs are just fonts encoded as vector .pbf files
     This makes them efficient to serve
 
     URL Pattern Example: /fonts/Noto%20Sans%20Regular/0-255.pbf
@@ -69,6 +73,15 @@ def serve_glyphs(_, fontstack, fontrange):
 
 
 def serve_tiles(_, z, x, y):
+    """
+    Serves map tiles from the tile_data directory
+    Each is a .pbf file that contains the tile as vector data
+    For info about generating these tiles, see the README
+
+    URL Pattern Example: /tiles/14/2620/6337.pbf
+    where 14 is the zoom level, 2620 is the x coordinate, and 6337 is the y coordinate
+    """
+
     tiles_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
         "tile_data",
