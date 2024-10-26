@@ -4,3 +4,5 @@
 files/
 
 dump.rdb
+
+*.pbf
