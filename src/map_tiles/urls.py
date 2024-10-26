@@ -1,4 +1,3 @@
-from django.http import JsonResponse
 from django.urls import path
 from .views import serve_glyphs, serve_metadata, serve_style_json, serve_tiles
 
