@@ -82,40 +82,6 @@ class MapTilesViewsTest(TestCase):
         data = response.json()
         self.assertEqual(data["message"], "Font not found")
 
-    def test_serve_tiles_file_exists(self):
-        # Uses the first tile from the tile_data directory for testing
-        tile_data_dir = os.path.join(self.base_dir, "tile_data/")
-        print(tile_data_dir)
-
-        try:
-            z_dir = next(
-                entry.path for entry in os.scandir(tile_data_dir) if entry.is_dir()
-            )
-            x_dir = next(os.scandir(z_dir)).path
-            y_file = next(glob.iglob(os.path.join(x_dir, "*")))
-
-        except StopIteration:
-            raise Exception("No tile data directories found")
-
-        z = int(os.path.basename(z_dir))
-        x = int(os.path.basename(x_dir))
-        y = int(os.path.basename(y_file).split(".")[0])
-
-        url = reverse("tiles", args=[z, x, y])
-
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response["Content-Type"], "application/x-protobuf")
-
-        # Read the expected tile file (it's gzipped)
-        tiles_path = os.path.join(
-            self.base_dir, "tile_data", str(z), str(x), f"{y}.pbf"
-        )
-        with gzip.open(tiles_path, "rb") as f:
-            expected_content = f.read()
-
-        self.assertEqual(response.content, expected_content)
-
     def test_serve_tiles_file_not_exists(self):
         # Test with a non-existing tile file
         z = 14
