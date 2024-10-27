@@ -1,10 +1,8 @@
-import glob
 from unittest.mock import MagicMock, patch
 from django.test import TestCase, Client
 from django.urls import reverse
 import os
 import json
-import gzip
 
 
 class MapTilesViewsTest(TestCase):
