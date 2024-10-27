@@ -1,4 +1,5 @@
 import glob
+from unittest.mock import MagicMock, patch
 from django.test import TestCase, Client
 from django.urls import reverse
 import os
@@ -96,3 +97,30 @@ class MapTilesViewsTest(TestCase):
         # Since FileResponse uses streaming_content, we need to get the content
         content = b"".join(response.streaming_content)
         self.assertEqual(content, b"")
+
+    def test_serve_tiles_file_exists(self):
+        z = 14
+        x = 1905
+        y = 4301
+        url = reverse("tiles", args=[z, x, y])
+
+        # Mock tile data
+        tile_data = b"test tile data"
+
+        def mock_gzip_open(file, mode="rb", *args, **kwargs):
+            # Create a mock file object
+            mock_file = MagicMock()
+            mock_file.__enter__.return_value = mock_file
+            mock_file.__exit__.return_value = False
+            # Set the read method to return the tile_data
+            mock_file.read.return_value = tile_data
+            return mock_file
+
+        with patch("os.path.exists") as mock_exists, patch("gzip.open", mock_gzip_open):
+            # Simulate that the file exists
+            mock_exists.return_value = True
+
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response["Content-Type"], "application/x-protobuf")
+            self.assertEqual(response.content, tile_data)
