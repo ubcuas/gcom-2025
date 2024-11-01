@@ -76,3 +76,9 @@ The process for creating them is as follows:
 2. Crop the data down to the specific region that the comp is in using [osmconvert](https://wiki.openstreetmap.org/wiki/Osmconvert#Clipping_based_on_Longitude_and_Latitude) - to find the coordinates of the region, use [latlong](https://www.latlong.net/)
 3. Convert the single .osm.pbf into individual tile files with [tilemaker](https://github.com/systemed/tilemaker) - use the docker image and _make sure to specify the output location as a dir not a .pbf_
 4. Paste the contents of the outputted tile dir into the `src/map_tiles/tile_data` dir
+
+### Zipped Tiles
+
+When you pull down the repo, there is a `resources/map_tiles_archive.zip` file in the map*tiles app. This contains the zipped pbf tile data that is housed in the `tile_data` folder.
+When the django app starts, the file is unzipped by the `apply` script in `map_tiles/apps.py`
+If you update the tile data and create a new zip file \_you must delete your old `tile_data` folder for changes to apply!*
