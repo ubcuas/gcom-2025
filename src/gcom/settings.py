@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "nav.apps.NavConfig",
     "drone.apps.DroneConfig",
     "mapping.apps.MappingConfig",
+    "map_tiles.apps.MapTilesConfig",
     "vision.apps.VisionConfig",
 ]
 
