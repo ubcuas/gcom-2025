@@ -1,5 +1,5 @@
 {
-  "tiles": ["replaced with actual tile URL"],
+  "tiles": ["<replaced with actual tile URL>"],
   "name": "OpenMapTiles",
   "format": "pbf",
   "basename": "north-america_canada.mbtiles",
