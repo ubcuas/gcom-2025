@@ -92,9 +92,7 @@ def serve_tiles(_, z, x, y):
 
     print("tiles_path", tiles_path)
     if not os.path.exists(tiles_path):
-        response = FileResponse(
-            b"", content_type="application/x-protobuf", status=200  # or 204
-        )
+        response = FileResponse(b"", content_type="application/x-protobuf", status=204)
         return response
 
     try:
