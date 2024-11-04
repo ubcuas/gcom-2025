@@ -89,7 +89,7 @@ class MapTilesViewsTest(TestCase):
         url = reverse("tiles", args=[z, x, y])
 
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(response["Content-Type"], "application/x-protobuf")
 
         # Since FileResponse uses streaming_content, we need to get the content
