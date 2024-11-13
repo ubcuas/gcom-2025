@@ -12,8 +12,6 @@ class MapTilesConfig(AppConfig):
         It's a suitable place to perform initialization tasks.
         """
         # Prevent running initialization multiple times during development
-        if os.environ.get("RUN_MAIN") != "true":
-            return
 
         self.unzip_file()
 
