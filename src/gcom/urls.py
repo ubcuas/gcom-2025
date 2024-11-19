@@ -43,6 +43,7 @@ urlpatterns = [
     path("api/drone/", include("drone.urls")),
     path("api/mapping/", include("mapping.urls")),
     path("api/vision/", include("vision.urls")),
+    path("api/map-tiles/", include("map_tiles.urls")),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
