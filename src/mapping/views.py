@@ -68,17 +68,18 @@ def process_points_on_route(request):
                 )
 
                 width, height = gsd * iw, gsd * ih
+                area = json.loads(area_modelled.area_of_interest)
+                
                 # Generating List of Points
-                area = area_modelled.area_of_interest
-                p1, p2, p3, p4 = area[0], area[1], area[2], area[3]
+                p1, p2, p3, p4 = area
                 p1x = p1["latitude"]
-                p1y = p1["longidute"]
+                p1y = p1["longitude"]
                 p2x = p2["latitude"]
-                p2y = p2["longidute"]
+                p2y = p2["longitude"]
                 p3x = p3["latitude"]
-                p3y = p3["longidute"]
+                p3y = p3["longitude"]
                 p4x = p4["latitude"]
-                p4y = p4["longidute"]
+                p4y = p4["longitude"]
                 # required altitude (meters)
                 alt = (iw * d_focal * gsd) / sw
 
@@ -116,7 +117,7 @@ def process_points_on_route(request):
                 points.save()
 
                 return HttpResponse(
-                    "New Mapping Route Successfully Saved" + "\n" + points, status=200
+                    "New Mapping Route Successfully Saved" + "\n" + str(points), status=200
                 )
 
         elif request.method == "GET":
@@ -127,7 +128,7 @@ def process_points_on_route(request):
 
             points = {
                 "points_on_route": json.loads(route.points_on_route),
-                "altitude": json.loads(route.altitude),
+                "altitude": route.altitude,
             }
 
             return JsonResponse(points, status=200)

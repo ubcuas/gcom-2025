@@ -2,6 +2,7 @@ from django.test import TestCase
 from .serializers import AreaOfInterestSerializer
 from rest_framework.test import APITestCase
 import json
+import math
 
 
 class AreaOfInterestValidationTest(TestCase):
@@ -182,3 +183,56 @@ class AreaOfInterestEndpointTest(APITestCase):
         self.assertFalse("altitude" in returned_object["area_of_interest"][1])
         self.assertFalse("altitude" in returned_object["area_of_interest"][2])
         self.assertFalse("altitude" in returned_object["area_of_interest"][3])
+
+
+class MappingRouteTest(APITestCase):
+    def setup(self):
+        pass
+        
+
+    def test_get_route_from_area(self):
+        test_object = {
+            "area_of_interest": [
+                {"latitude": 2, "longitude": 11.4, "altitude": 3},
+                {"latitude": 0, "longitude": 116, "altitude": 6},
+                {"latitude": 193, "longitude": 110, "altitude": 9},
+                {"latitude": 200, "longitude": 5, "altitude": 12},
+            ]
+        }
+
+        post_response = self.client.post(
+            "/api/mapping/area_of_interest",
+            json.dumps(test_object),
+            content_type="application/json",
+        )
+
+        self.assertEqual(post_response.status_code, 200)
+        
+        post_response = self.client.post(
+            "/api/mapping/points_on_route",
+            content_type="application/json",
+        )
+
+        self.assertEqual(post_response.status_code, 200)
+
+        get_response = self.client.get(
+            "/api/mapping/points_on_route",
+        )
+
+        returned_object = json.loads(get_response.content)
+        self.assertEqual(get_response.status_code, 200)
+
+        points = returned_object["points_on_route"]
+
+        self.assertEqual(math.floor(points[0][0]), 176)
+
+
+
+        
+
+        
+
+        
+    
+
+
