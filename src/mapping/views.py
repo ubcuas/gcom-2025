@@ -69,7 +69,7 @@ def process_points_on_route(request):
 
                 width, height = gsd * iw, gsd * ih
                 area = json.loads(area_modelled.area_of_interest)
-                
+
                 # Generating List of Points
                 p1, p2, p3, p4 = area
                 p1x = p1["latitude"]
@@ -117,7 +117,8 @@ def process_points_on_route(request):
                 points.save()
 
                 return HttpResponse(
-                    "New Mapping Route Successfully Saved" + "\n" + str(points), status=200
+                    "New Mapping Route Successfully Saved" + "\n" + str(points),
+                    status=200,
                 )
 
         elif request.method == "GET":

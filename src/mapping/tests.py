@@ -188,7 +188,6 @@ class AreaOfInterestEndpointTest(APITestCase):
 class MappingRouteTest(APITestCase):
     def setup(self):
         pass
-        
 
     def test_get_route_from_area(self):
         test_object = {
@@ -207,7 +206,7 @@ class MappingRouteTest(APITestCase):
         )
 
         self.assertEqual(post_response.status_code, 200)
-        
+
         post_response = self.client.post(
             "/api/mapping/points_on_route",
             content_type="application/json",
@@ -225,14 +224,3 @@ class MappingRouteTest(APITestCase):
         points = returned_object["points_on_route"]
 
         self.assertEqual(math.floor(points[0][0]), 176)
-
-
-
-        
-
-        
-
-        
-    
-
-
