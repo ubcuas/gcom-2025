@@ -190,25 +190,18 @@ class AreaOfInterestEndpointTest(APITestCase):
 
 class StitchTest(TestCase):
 
-    def test_UBC_forest(self):
-
-        input_directory = os.path.join(
-            settings.MEDIA_ROOT, "test", "image_stitching", "input"
-        )
-        output_file = os.path.join(
-            settings.MEDIA_ROOT, "test", "image_stitching", "output", "stitched.png"
-        )
+    def stitch_test_helper(self, output_file, input_directory):
 
         # clean up old test output
         if os.path.exists(output_file):
             os.remove(output_file)
             self.assertFalse(os.path.exists(output_file), "file deletion unsuccessful")
 
-        #
         input_filenames = [
             os.path.join(input_directory, f)
             for f in os.listdir(input_directory)
-            if os.path.isfile(os.path.join(input_directory, f)) and "png" in f
+            if os.path.isfile(os.path.join(input_directory, f))
+            and ("png" in f or "jpg" in f)
         ]
 
         # synchronous test of asynchronous function.
@@ -229,3 +222,37 @@ class StitchTest(TestCase):
             os.path.exists(output_file),
             "task is claimed to be successful yet no file is created",
         )
+
+    def test_forest(self):
+
+        input_directory = os.path.join(
+            settings.MEDIA_ROOT, "test", "ubc_forest", "input"
+        )
+        output_file = os.path.join(
+            settings.MEDIA_ROOT, "test", "ubc_forest", "output.png"
+        )
+        #
+
+        self.stitch_test_helper(output_file, input_directory)
+
+    def test_parking_lot_zoomed_in(self):
+
+        input_directory = os.path.join(
+            settings.MEDIA_ROOT, "test", "zoomed_in", "input"
+        )
+        output_file = os.path.join(
+            settings.MEDIA_ROOT, "test", "zoomed_in", "output.png"
+        )
+
+        self.stitch_test_helper(output_file, input_directory)
+
+    def test_parking_lot_zoomed_out(self):
+
+        input_directory = os.path.join(
+            settings.MEDIA_ROOT, "test", "zoomed_out", "input"
+        )
+        output_file = os.path.join(
+            settings.MEDIA_ROOT, "test", "zoomed_out", "output.png"
+        )
+
+        self.stitch_test_helper(output_file, input_directory)
