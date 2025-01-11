@@ -7,6 +7,7 @@ class DroneApiClient:
 
     @staticmethod
     def _mission_planner_api_call(endpoint, method="GET", data=None):
+        response = None
         url = f"{DroneApiClient._mission_planner_api_url}/{endpoint}"
         headers = {"Content-Type": "application/json"}
         if method == "GET":
