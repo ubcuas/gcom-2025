@@ -124,4 +124,3 @@ class CoordinateOfInterestTests(TestCase):
             CoordinateOfInterest.objects.create(
                 latitude=0, name="Test", description="Test description"
             )
-

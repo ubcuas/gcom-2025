@@ -25,17 +25,19 @@ class DroneTelemetry(models.Model):
     heading = models.FloatField(null=False)
     battery_voltage = models.FloatField(null=False)
 
+
 class CoordinateOfInterest(models.Model):
     """Represents a coordinate of interest that the drone has visited."""
+
     latitude = models.FloatField(null=False)
     longitude = models.FloatField(null=False)
     name = models.CharField(max_length=100, null=True)
     description = models.TextField(null=True)
 
     def __str__(self):
-        return (f"{self.name} ({self.latitude}, {self.longitude})"
-                f" - {self.description}")
-
+        return (
+            f"{self.name} ({self.latitude}, {self.longitude})" f" - {self.description}"
+        )
 
 
 class DroneSingleton(models.Model):

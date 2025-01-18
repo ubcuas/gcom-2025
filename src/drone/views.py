@@ -42,7 +42,9 @@ def add_coordinate_of_interest(request):
         description = data.get("description")
         if not latitude or not longitude:
             return JsonResponse({"error": "Invalid input"}, status=400)
-        CoordinateOfInterest.objects.create(latitude=latitude, longitude=longitude, name=name, description=description)
+        CoordinateOfInterest.objects.create(
+            latitude=latitude, longitude=longitude, name=name, description=description
+        )
         return HttpResponse(status=201)
     except (KeyError, ValueError, TypeError):
         return JsonResponse({"error": "Invalid input"}, status=400)
@@ -51,9 +53,18 @@ def add_coordinate_of_interest(request):
 @require_http_methods(["GET"])
 def get_coordinates_of_interest(request):
     coordinates = CoordinateOfInterest.objects.all()
-    return JsonResponse([{"latitude": c.latitude, "longitude": c.longitude,
-                          "name": c.name, "description": c.description} for c in coordinates],
-                        safe=False)
+    return JsonResponse(
+        [
+            {
+                "latitude": c.latitude,
+                "longitude": c.longitude,
+                "name": c.name,
+                "description": c.description,
+            }
+            for c in coordinates
+        ],
+        safe=False,
+    )
 
 
 @csrf_exempt
