@@ -1,6 +1,6 @@
 from django.db import IntegrityError
 from django.test import TestCase
-from .models import DroneTelemetry
+from .models import DroneTelemetry, CoordinateOfInterest
 from .models import DroneSingleton
 
 
@@ -98,3 +98,29 @@ class DroneSingletonModelTest(TestCase):
     def test_cannot_create_without_armed(self):
         with self.assertRaises(IntegrityError):
             DroneSingleton.objects.create(mode="AUT", armed=None)
+
+
+class CoordinateOfInterestTests(TestCase):
+    def setUp(self):
+        CoordinateOfInterest.objects.create(
+            latitude=20, longitude=20, name="Test", description="Test description"
+        )
+
+    def test_coordinate_of_interest(self):
+        coordinate_of_interest = CoordinateOfInterest.objects.get(name="Test")
+        self.assertEqual(coordinate_of_interest.latitude, 20)
+        self.assertEqual(coordinate_of_interest.longitude, 20)
+        self.assertEqual(coordinate_of_interest.name, "Test")
+        self.assertEqual(coordinate_of_interest.description, "Test description")
+
+    def test_cannot_create_without_latitude(self):
+        with self.assertRaises(IntegrityError):
+            CoordinateOfInterest.objects.create(
+                longitude=0, name="Test", description="Test description"
+            )
+
+    def test_cannot_create_without_longitude(self):
+        with self.assertRaises(IntegrityError):
+            CoordinateOfInterest.objects.create(
+                latitude=0, name="Test", description="Test description"
+            )

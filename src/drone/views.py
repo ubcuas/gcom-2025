@@ -2,6 +2,8 @@ from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 import json
+
+from .models import CoordinateOfInterest
 from .mps_api import DroneApiClient
 
 
@@ -27,6 +29,42 @@ def takeoff(request):
         return HttpResponse(status=response.status_code)
     except (KeyError, ValueError, TypeError):
         return JsonResponse({"error": "Invalid input"}, status=400)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def add_coordinate_of_interest(request):
+    try:
+        data = json.loads(request.body)
+        latitude = data.get("latitude")
+        longitude = data.get("longitude")
+        name = data.get("name")
+        description = data.get("description")
+        if not latitude or not longitude:
+            return JsonResponse({"error": "Invalid input"}, status=400)
+        CoordinateOfInterest.objects.create(
+            latitude=latitude, longitude=longitude, name=name, description=description
+        )
+        return HttpResponse(status=201)
+    except (KeyError, ValueError, TypeError):
+        return JsonResponse({"error": "Invalid input"}, status=400)
+
+
+@require_http_methods(["GET"])
+def get_coordinates_of_interest(request):
+    coordinates = CoordinateOfInterest.objects.all()
+    return JsonResponse(
+        [
+            {
+                "latitude": c.latitude,
+                "longitude": c.longitude,
+                "name": c.name,
+                "description": c.description,
+            }
+            for c in coordinates
+        ],
+        safe=False,
+    )
 
 
 @csrf_exempt

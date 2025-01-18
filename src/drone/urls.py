@@ -18,4 +18,6 @@ urlpatterns = [
     path("clear", views.clear, name="clear"),
     path("diversion", views.diversion, name="diversion"),
     path("flightmode", views.flightmode, name="flight_mode"),
+    path("add_coordinate/", views.add_coordinate_of_interest, name="add_coordinate"),
+    path("get_coordinates/", views.get_coordinates_of_interest, name="get_coordinates"),
 ]
