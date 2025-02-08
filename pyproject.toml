@@ -3,7 +3,7 @@ name = "gcom"
 version = "0.1.0"
 description = "Ground Control Software Rewrite"
 authors = ["21chanas3 <adenchan@gmail.com>"]
-readme = "README.md"
+readme = "/README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
