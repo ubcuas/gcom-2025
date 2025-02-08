@@ -1,3 +1,4 @@
+from rest_framework.exceptions import NotFound
 from rest_framework import viewsets
 from .models import Route, OrderedWaypoint
 from .serializers import RouteSerializer, OrderedWaypointSerializer
@@ -19,12 +20,33 @@ class OrderedWaypointViewset(viewsets.ModelViewSet):
 
         return super(OrderedWaypointViewset, self).get_serializer(*args, **kwargs)
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        if self.request.method == "POST":
+            route_id = self.request.data.get("route")
+            if route_id:
+                try:
+                    Route.objects.get(id=route_id)
+                except Route.DoesNotExist:
+                    Route.objects.create(id=route_id, name=f"Route {route_id}")
+        return context
+
 
 class RoutesViewset(viewsets.ModelViewSet):
     """Viewset for CRUD operations on Routes"""
 
     queryset = Route.objects.all().prefetch_related("waypoints")
     serializer_class = RouteSerializer
+
+    def get_object(self):
+        pk = self.kwargs.get("pk")
+        try:
+            return Route.objects.get(pk=pk)
+
+        except Route.DoesNotExist:
+            if int(pk) == 1:
+                return Route.objects.create(id=1, name="Default Route")
+            raise NotFound(f"Route with id {pk} not found")
 
     @action(detail=True, methods=["post"], url_path="reorder-waypoints")
     def reorder_waypoints(self, request, pk=None):

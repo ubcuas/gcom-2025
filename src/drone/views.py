@@ -39,6 +39,8 @@ def arm(request):
         return HttpResponse(status=response.status_code)
     except (KeyError, ValueError, TypeError):
         return JsonResponse({"error": "Invalid input"}, status=400)
+    except AttributeError:
+        return JsonResponse({"error": "MPS Down"}, status=503)
 
 
 @require_http_methods(["GET"])
