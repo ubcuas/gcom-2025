@@ -10,6 +10,7 @@ RUN mkdir -p /src /var/log/supervisor
 WORKDIR /src
 
 COPY ./src /src
+COPY README.md /src
 COPY pyproject.toml /src
 
 RUN pip3 install poetry \
