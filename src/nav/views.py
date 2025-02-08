@@ -30,12 +30,9 @@ class RoutesViewset(viewsets.ModelViewSet):
     def get_object(self):
         pk = self.kwargs.get("pk")
         try:
-            print(f"GETTING ROUTE {pk}")
             return Route.objects.get(pk=pk)
 
         except Route.DoesNotExist:
-            print(f"Checking if has pk 1")
-            print("TYPE E", type(pk))
             if int(pk) == 1:
                 return Route.objects.create(id=1, name="Default Route")
             raise NotFound(f"Route with id {pk} not found")
