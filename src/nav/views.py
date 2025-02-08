@@ -20,6 +20,17 @@ class OrderedWaypointViewset(viewsets.ModelViewSet):
 
         return super(OrderedWaypointViewset, self).get_serializer(*args, **kwargs)
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        if self.request.method == "POST":
+            route_id = self.request.data.get("route")
+            if route_id:
+                try:
+                    Route.objects.get(id=route_id)
+                except Route.DoesNotExist:
+                    Route.objects.create(id=route_id, name=f"Route {route_id}")
+        return context
+
 
 class RoutesViewset(viewsets.ModelViewSet):
     """Viewset for CRUD operations on Routes"""
