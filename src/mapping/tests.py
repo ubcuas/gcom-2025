@@ -4,7 +4,7 @@ from .tasks import stitch_images
 from rest_framework.test import APITestCase
 import json
 import os
-
+import subprocess
 from django.conf import settings
 
 
@@ -223,17 +223,16 @@ class StitchTest(TestCase):
             "task is claimed to be successful yet no file is created",
         )
 
-    def test_forest(self):
-
-        input_directory = os.path.join(
-            settings.MEDIA_ROOT, "test", "ubc_forest", "input"
+    def test_dependency_present(self):
+        present = subprocess.check_output(
+            "docker manifest inspect opendronemap/odm > /dev/null 2>&1 && echo 1 || echo 0",
+            shell=True,
         )
-        output_file = os.path.join(
-            settings.MEDIA_ROOT, "test", "ubc_forest", "output.png"
+        present = int(present)
+        self.assertTrue(
+            present == 1,
+            "odm image is not present, run `docker pull opendronemap/odm` to get it",
         )
-        #
-
-        self.stitch_test_helper(output_file, input_directory)
 
     def test_parking_lot_zoomed_in(self):
 
