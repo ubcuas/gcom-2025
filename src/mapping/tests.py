@@ -189,7 +189,7 @@ class AreaOfInterestEndpointTest(APITestCase):
 
 
 class StitchTest(TestCase):
-
+    # ./manage.py test mapping.tests.StitchTest --parallel
     def stitch_test_helper(self, output_file, input_directory):
 
         # clean up old test output

@@ -1,25 +1,16 @@
+# get project structure
+from django.conf import settings
+
+# parallelzation
 from celery import shared_task
+
 import cv2
 import stitching
+import subprocess
+import shutil
+import os
 
 # pylint: disable=no-member
-
-
-def stitch_images_with_cv2(input_pathes):
-    # print(input_paths)
-    imgs = [cv2.imread(p) for p in input_pathes]
-
-    # stitcher = cv2.Stitcher_create(cv2.Stitcher_PANORAMA)
-    stitcher = cv2.Stitcher.create(cv2.Stitcher_SCANS)
-    (status, stitched) = stitcher.stitch(imgs)
-
-    return (status, stitched)
-
-
-def stitch_images_with_stitching(input_pathes):
-    stitcher = stitching.Stitcher(detector="orb", confidence_threshold=0.6, crop=False)
-    stitched = stitcher.stitch(input_pathes)
-    return stitched
 
 
 def stitch_images_expanded(input_pathes, print_log=False):
@@ -207,6 +198,40 @@ def stitch_images_expanded(input_pathes, print_log=False):
     return stitched
 
 
+def stitch_images_odm(output_path, input_pathes):
+    # that images should be in [data_sets_path]/[project_name]/images
+    data_sets_path = os.path.join(settings.MEDIA_ROOT, "odm_working_dir")
+
+    if os.path.exists(os.path.join(data_sets_path, "default")):
+        shutil.rmtree(os.path.join(data_sets_path, "default"))
+
+    os.makedirs(data_sets_path, exist_ok=True)
+    os.makedirs(os.path.join(data_sets_path, "default"), exist_ok=False)
+    os.makedirs(os.path.join(data_sets_path, "default", "images"), exist_ok=False)
+
+    for i, img_path in enumerate(input_pathes):
+        shutil.copy(
+            img_path,
+            os.path.join(data_sets_path, "default", "images", f"{i}.png"),
+        )
+
+    subprocess.Popen(
+        f'docker run -ti --rm -v "$(pwd)/{data_sets_path}":/datasets opendronemap/odm --project-path /datasets default --orthophoto-resolution 1 --orthophoto-png --skip-3dmodel --skip-report',
+        shell=True,
+        stdout=subprocess.DEVNULL,
+    ).wait()
+
+    generated_png_path = os.path.join(
+        data_sets_path, "default", "odm_orthophoto", "odm_orthophoto.png"
+    )
+
+    shutil.copy(
+        generated_png_path,
+        output_path,
+    )
+    return True
+
+
 @shared_task
 def stitch_images(output_path, input_pathes):
     """
@@ -220,16 +245,14 @@ def stitch_images(output_path, input_pathes):
         A boolean about whether image stitching worked without any Issue.
     """
 
-    # default cv2 version
-    # status, stitched = stitch_images_with_cv2(input_pathes)
-    # if status != cv2.Stitcher_OK:  # ok is 0
-    #     return False
-
-    # default "stitching" version
-    # stitched = stitch_images_with_stitching(input_pathes)
-
     # custom "stitching" version
-    stitched = stitch_images_expanded(input_pathes)
+    # stitched = stitch_images_expanded(input_pathes)
+    # cv2.imwrite(output_path, stitched)
+    # success=True
 
-    cv2.imwrite(output_path, stitched)
-    return True
+    success = stitch_images_odm(
+        output_path,
+        input_pathes,
+    )
+
+    return success
