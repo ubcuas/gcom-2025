@@ -61,10 +61,10 @@ def process_points_on_route(request):
                 d_focal, sw, iw, ih, gsd, o = (
                     0.012,
                     0.0131328,
-                    3840,
-                    2160,
-                    0.025,
-                    0.317,
+                    5472,
+                    3648,
+                    0.036,
+                    0.7,
                 )
 
                 width, height = gsd * iw, gsd * ih
@@ -84,17 +84,34 @@ def process_points_on_route(request):
                 alt = (iw * d_focal * gsd) / sw
 
                 # Maximum X and Y distances
-                ylen1 = distance(p1x, p1y, p2x, p2y)
-                ylen2 = distance(p3x, p3y, p4x, p4y)
-                ymax = max(ylen1, ylen2)
-
-                xlen1 = distance(p1x, p1y, p4x, p4y)
-                xlen2 = distance(p2x, p2y, p3x, p3y)
-                xmax = max(xlen1, xlen2)
 
                 # Num pictures needed on X-axis and Y-axis
-                xcount = math.ceil((xmax - (o * width)) / ((1 - o) * width)) + 1
-                ycount = math.ceil((ymax - (o * height)) / ((1 - o) * height)) + 1
+                xcount = (
+                    math.ceil(
+                        (
+                            max(
+                                distance(p1x, p1y, p2x, p2y),
+                                distance(p1x, p1y, p4x, p4y),
+                            )
+                            - o * height
+                        )
+                        / ((1 - o) * height)
+                    )
+                    + 1
+                )
+                ycount = (
+                    math.ceil(
+                        (
+                            min(
+                                distance(p1x, p1y, p2x, p2y),
+                                distance(p1x, p1y, p4x, p4y),
+                            )
+                            - o * width
+                        )
+                        / ((1 - o) * width)
+                    )
+                    + 1
+                )
 
                 # Creating Mesh Grids
                 gridl = meshl(xcount, ycount, o)
@@ -122,7 +139,7 @@ def process_points_on_route(request):
                 )
 
         elif request.method == "GET":
-            # Getting most recent drone rout from MappingRoute
+            # Getting most recent drone route from MappingRoute
             route = MappingRoute.objects.last()
             if route is None:
                 return HttpResponse("No Drone Route Saved", status=204)

@@ -192,10 +192,10 @@ class MappingRouteTest(APITestCase):
     def test_get_route_from_area(self):
         test_object = {
             "area_of_interest": [
-                {"latitude": 2, "longitude": 11.4, "altitude": 3},
-                {"latitude": 0, "longitude": 116, "altitude": 6},
-                {"latitude": 193, "longitude": 110, "altitude": 9},
-                {"latitude": 200, "longitude": 5, "altitude": 12},
+                {"latitude": 0, "longitude": 0, "altitude": 0},
+                {"latitude": 28.21, "longitude": 131.25, "altitude": 0},
+                {"latitude": 354.00, "longitude": 61.89, "altitude": 0},
+                {"latitude": 323.69, "longitude": -71.69, "altitude": 0},
             ]
         }
 
@@ -223,4 +223,16 @@ class MappingRouteTest(APITestCase):
 
         points = returned_object["points_on_route"]
 
-        self.assertEqual(math.floor(points[0][0]), 176)
+        # Point1 matches intended
+        self.assertEqual(math.floor(points[0][0]), 311)
+        self.assertEqual(math.floor(points[0][1]), 0)
+
+        # Point2
+        self.assertEqual(math.floor(points[1][0]), 273)
+        self.assertEqual(math.floor(points[1][1]), 9)
+
+        # Point3
+        self.assertEqual(math.floor(points[2][0]), 234)
+        self.assertEqual(math.floor(points[2][1]), 17)
+
+        self.assertEqual(len(points), 8)
