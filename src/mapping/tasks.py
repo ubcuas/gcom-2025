@@ -28,7 +28,7 @@ def stitch_images_odm(output_path, input_pathes):
         )
 
     subprocess.Popen(
-        f'docker run -ti --rm -v "$(pwd)/{data_sets_path}":/datasets opendronemap/odm --project-path /datasets default --orthophoto-resolution 1 --orthophoto-png --skip-3dmodel --skip-report',
+        f'docker run --rm -v "$(pwd)/{data_sets_path}":/datasets opendronemap/odm --project-path /datasets default --orthophoto-resolution 1 --orthophoto-png --skip-3dmodel --skip-report',
         shell=True,
         stdout=subprocess.DEVNULL,
     ).wait()

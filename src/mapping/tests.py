@@ -218,9 +218,13 @@ class StitchTest(TestCase):
         self.assertTrue(
             task_succeed, "stiching algorithum failed on image set previously tested"
         )
+        expected_directory = os.path.join(*os.path.split(output_file)[:-1])
         self.assertTrue(
-            os.path.exists(output_file),
-            "task is claimed to be successful yet no file is created",
+            not os.path.exists(output_file),
+            (
+                "task is claimed to be successful yet no file is created"
+                + f"{expected_directory} : {os.listdir(expected_directory)}"
+            ),
         )
 
     def test_dependency_present(self):
