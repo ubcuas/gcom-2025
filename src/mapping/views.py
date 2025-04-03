@@ -2,7 +2,12 @@ from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .serializers import AreaOfInterestSerializer
 from .models import AreaOfInterest
+from .service import distance
+from .service import meshl
+from .service import meshr
+from nav.models import Route, OrderedWaypoint
 import json
+import math
 
 # pylint: disable=no-member
 
@@ -35,6 +40,126 @@ def process_area_of_interest(request):
             area = {"area_of_interest": json.loads(area_modelled.area_of_interest)}
 
             return JsonResponse(area, status=200)
+        else:
+            return HttpResponse("Correct Address, Incorrect Method", status=405)
+    except (KeyError, ValueError, TypeError) as e:
+        return HttpResponse("Server Error\n" + str(e), status=500)
+
+
+@csrf_exempt
+def process_points_on_route(request):
+    # Uses 4 most recent boundary points to make route mapping
+    try:
+        if request.method == "POST":
+            # Gets most recent Boundary points for computation
+            area_modelled = AreaOfInterest.objects.last()
+            if area_modelled is None:
+                return HttpResponse("No Area Of Interest Saved", status=204)
+            else:
+                # Camera Parameters (Focal length, Sensor Width, Sensor Height, Image Width
+                # Image Height, Ground Sample Distance, Image overlap %)
+                d_focal, sw, iw, ih, gsd, o = (
+                    0.012,
+                    0.0131328,
+                    5472,
+                    3648,
+                    0.036,
+                    0.7,
+                )
+
+                width, height = gsd * iw, gsd * ih
+                area = json.loads(area_modelled.area_of_interest)
+
+                # Generating List of Points
+                p1, p2, p3, p4 = area
+                p1x = p1["latitude"]
+                p1y = p1["longitude"]
+                p2x = p2["latitude"]
+                p2y = p2["longitude"]
+                p3x = p3["latitude"]
+                p3y = p3["longitude"]
+                p4x = p4["latitude"]
+                p4y = p4["longitude"]
+                # required altitude (meters)
+                alt = (iw * d_focal * gsd) / sw
+
+                # Maximum X and Y distances
+
+                # Num pictures needed on X-axis and Y-axis
+                xcount = (
+                    math.ceil(
+                        (
+                            max(
+                                distance(p1x, p1y, p2x, p2y),
+                                distance(p1x, p1y, p4x, p4y),
+                            )
+                            - o * height
+                        )
+                        / ((1 - o) * height)
+                    )
+                    + 1
+                )
+                ycount = (
+                    math.ceil(
+                        (
+                            min(
+                                distance(p1x, p1y, p2x, p2y),
+                                distance(p1x, p1y, p4x, p4y),
+                            )
+                            - o * width
+                        )
+                        / ((1 - o) * width)
+                    )
+                    + 1
+                )
+
+                # Creating Mesh Grids
+                gridl = meshl(xcount, ycount, o)
+                gridr = meshr(xcount, ycount, o)
+
+                # Projecting Mesh Grid onto images
+                final_grid = []
+                for i in range(xcount * ycount):
+                    newx = (p3x + gridl[i] * (p2x - p3x)) + gridr[i] * (
+                        p4x - p3x + gridl[i] * (p1x - p2x + p3x - p4x)
+                    )
+                    newy = (p3y + gridl[i] * (p2y - p3y)) + gridr[i] * (
+                        p4y - p3y + gridl[i] * (p1y - p2y + p3y - p4y)
+                    )
+                    final_grid.append([newx, newy])
+
+                route = Route.objects.create(name="mapping_route")
+
+                # Create ordered waypoints for each point
+                for i, (lat, lon) in enumerate(final_grid):
+                    OrderedWaypoint.objects.create(
+                        name=f"Waypoint {i+1}",
+                        latitude=lat,
+                        longitude=lon,
+                        altitude=alt,  # Set appropriate altitude as needed
+                        order=i,
+                        route=route,
+                    )
+
+                route.save()
+
+                return HttpResponse(
+                    "New Mapping Route Successfully Saved" + "\n" + str(final_grid),
+                    status=200,
+                )
+
+        elif request.method == "GET":
+            # Getting most recent drone route from Waypoints
+            route = Route.objects.last()
+            if route is None:
+                return HttpResponse("No Drone Route Saved", status=204)
+
+            # Get all waypoints for this route ordered by their order field
+            waypoints = route.waypoints.order_by("order")
+            points_on_route = [[wp.latitude, wp.longitude] for wp in waypoints]
+
+            return JsonResponse({"points_on_route": points_on_route}, status=200)
+
         else:
             return HttpResponse("Correct Address, Incorrect Method", status=405)
     except (KeyError, ValueError, TypeError) as e:

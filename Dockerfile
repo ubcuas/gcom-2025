@@ -1,8 +1,9 @@
-FROM python:3.12
+FROM python:3.10
 
 RUN apt-get update && apt-get install -y \
     redis-server \
     supervisor \
+    curl \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /src /var/log/supervisor
@@ -12,9 +13,12 @@ WORKDIR /src
 COPY ./src /src
 COPY pyproject.toml /src
 
-RUN pip3 install poetry \
-    && poetry config virtualenvs.create false \
-    && poetry install --only main
+# Install poetry using pip
+RUN pip install poetry==1.7.1
+
+# Install dependencies
+RUN poetry config virtualenvs.create false \
+    && poetry install --no-interaction --no-ansi --only main
 
 RUN cat <<EOF > /etc/supervisor/supervisord.conf
 [supervisord]

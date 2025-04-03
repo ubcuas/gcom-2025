@@ -2,6 +2,7 @@ from django.test import TestCase
 from .serializers import AreaOfInterestSerializer
 from rest_framework.test import APITestCase
 import json
+import math
 
 
 class AreaOfInterestValidationTest(TestCase):
@@ -182,3 +183,56 @@ class AreaOfInterestEndpointTest(APITestCase):
         self.assertFalse("altitude" in returned_object["area_of_interest"][1])
         self.assertFalse("altitude" in returned_object["area_of_interest"][2])
         self.assertFalse("altitude" in returned_object["area_of_interest"][3])
+
+
+class MappingRouteTest(APITestCase):
+    def setup(self):
+        pass
+
+    def test_get_route_from_area(self):
+        test_object = {
+            "area_of_interest": [
+                {"latitude": 0, "longitude": 0, "altitude": 0},
+                {"latitude": 28.21, "longitude": 131.25, "altitude": 0},
+                {"latitude": 354.00, "longitude": 61.89, "altitude": 0},
+                {"latitude": 323.69, "longitude": -71.69, "altitude": 0},
+            ]
+        }
+
+        post_response = self.client.post(
+            "/api/mapping/area_of_interest",
+            json.dumps(test_object),
+            content_type="application/json",
+        )
+
+        self.assertEqual(post_response.status_code, 200)
+
+        post_response = self.client.post(
+            "/api/mapping/points_on_route",
+            content_type="application/json",
+        )
+
+        self.assertEqual(post_response.status_code, 200)
+
+        get_response = self.client.get(
+            "/api/mapping/points_on_route",
+        )
+
+        returned_object = json.loads(get_response.content)
+        self.assertEqual(get_response.status_code, 200)
+
+        points = returned_object["points_on_route"]
+
+        # Point1 matches intended
+        self.assertEqual(math.floor(points[0][0]), 311)
+        self.assertEqual(math.floor(points[0][1]), 0)
+
+        # Point2
+        self.assertEqual(math.floor(points[1][0]), 273)
+        self.assertEqual(math.floor(points[1][1]), 9)
+
+        # Point3
+        self.assertEqual(math.floor(points[2][0]), 234)
+        self.assertEqual(math.floor(points[2][1]), 17)
+
+        self.assertEqual(len(points), 8)
