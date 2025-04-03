@@ -2,10 +2,10 @@ from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from .serializers import AreaOfInterestSerializer
 from .models import AreaOfInterest
-from .models import MappingRoute
 from .service import distance
 from .service import meshl
 from .service import meshr
+from nav.models import Route, OrderedWaypoint
 import json
 import math
 
@@ -128,28 +128,37 @@ def process_points_on_route(request):
                     )
                     final_grid.append([newx, newy])
 
-                points = MappingRoute(
-                    points_on_route=json.dumps(final_grid), altitude=json.dumps(alt)
-                )
-                points.save()
+                route = Route.objects.create(name="mapping_route")
+
+                # Create ordered waypoints for each point
+                for i, (lat, lon) in enumerate(final_grid):
+                    OrderedWaypoint.objects.create(
+                        name=f"Waypoint {i+1}",
+                        latitude=lat,
+                        longitude=lon,
+                        altitude=alt,  # Set appropriate altitude as needed
+                        order=i,
+                        route=route,
+                    )
+
+                route.save()
 
                 return HttpResponse(
-                    "New Mapping Route Successfully Saved" + "\n" + str(points),
+                    "New Mapping Route Successfully Saved" + "\n" + str(final_grid),
                     status=200,
                 )
 
         elif request.method == "GET":
-            # Getting most recent drone route from MappingRoute
-            route = MappingRoute.objects.last()
+            # Getting most recent drone route from Waypoints
+            route = Route.objects.last()
             if route is None:
                 return HttpResponse("No Drone Route Saved", status=204)
 
-            points = {
-                "points_on_route": json.loads(route.points_on_route),
-                "altitude": route.altitude,
-            }
+            # Get all waypoints for this route ordered by their order field
+            waypoints = route.waypoints.order_by("order")
+            points_on_route = [[wp.latitude, wp.longitude] for wp in waypoints]
 
-            return JsonResponse(points, status=200)
+            return JsonResponse({"points_on_route": points_on_route}, status=200)
 
         else:
             return HttpResponse("Correct Address, Incorrect Method", status=405)
