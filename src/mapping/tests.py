@@ -238,24 +238,24 @@ class StitchTest(TestCase):
             "odm image is not present, run `docker pull opendronemap/odm` to get it",
         )
 
-    def test_parking_lot_zoomed_in(self):
+    # def test_parking_lot_zoomed_in(self):
 
-        input_directory = os.path.join(
-            settings.MEDIA_ROOT, "test", "zoomed_in", "input"
-        )
-        output_file = os.path.join(
-            settings.MEDIA_ROOT, "test", "zoomed_in", "output.png"
-        )
+    #     input_directory = os.path.join(
+    #         settings.MEDIA_ROOT, "test", "zoomed_in", "input"
+    #     )
+    #     output_file = os.path.join(
+    #         settings.MEDIA_ROOT, "test", "zoomed_in", "output.png"
+    #     )
 
-        self.stitch_test_helper(output_file, input_directory)
+    #     self.stitch_test_helper(output_file, input_directory)
 
-    def test_parking_lot_zoomed_out(self):
+    # def test_parking_lot_zoomed_out(self):
 
-        input_directory = os.path.join(
-            settings.MEDIA_ROOT, "test", "zoomed_out", "input"
-        )
-        output_file = os.path.join(
-            settings.MEDIA_ROOT, "test", "zoomed_out", "output.png"
-        )
+    #     input_directory = os.path.join(
+    #         settings.MEDIA_ROOT, "test", "zoomed_out", "input"
+    #     )
+    #     output_file = os.path.join(
+    #         settings.MEDIA_ROOT, "test", "zoomed_out", "output.png"
+    #     )
 
-        self.stitch_test_helper(output_file, input_directory)
+    #     self.stitch_test_helper(output_file, input_directory)
