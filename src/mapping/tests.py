@@ -5,7 +5,8 @@ from rest_framework.test import APITestCase
 import json
 import os
 import subprocess
-from django.conf import settings
+
+# from django.conf import settings
 
 
 class AreaOfInterestValidationTest(TestCase):
