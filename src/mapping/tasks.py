@@ -62,9 +62,10 @@ def stitch_images_odm(
         ns_hemisphere = "N" if lat_center > 0 else "S"
         geo_projection = f"WGS84 UTM {math.floor(lng_center/6)+31}{ns_hemisphere}\n"
 
-        geo_data_path = os.path.join(data_sets_path, "default", "images", "geo.txt")
+        # geo_data_path = os.path.join(data_sets_path, "default", "images", "geo.txt")
+        geo_data_path = os.path.join(data_sets_path, "default", "geo.txt")
 
-        with open(geo_data_path, "w+", "utf-8") as fi:
+        with open(geo_data_path, "w+", encoding="utf-8") as fi:
             fi.write(geo_projection)
             for g in geo_data:
                 image_original_path = input_pathes[geo_data["data"]["Img"] - 1]
