@@ -1,7 +1,12 @@
 from django.test import TestCase
 from .serializers import AreaOfInterestSerializer
+from .tasks import stitch_images
 from rest_framework.test import APITestCase
 import json
+import os
+import subprocess
+
+# from django.conf import settings
 
 
 class AreaOfInterestValidationTest(TestCase):
@@ -182,3 +187,76 @@ class AreaOfInterestEndpointTest(APITestCase):
         self.assertFalse("altitude" in returned_object["area_of_interest"][1])
         self.assertFalse("altitude" in returned_object["area_of_interest"][2])
         self.assertFalse("altitude" in returned_object["area_of_interest"][3])
+
+
+class StitchTest(TestCase):
+    # ./manage.py test mapping.tests.StitchTest --parallel
+    def stitch_test_helper(self, output_file, input_directory):
+
+        # clean up old test output
+        if os.path.exists(output_file):
+            os.remove(output_file)
+            self.assertFalse(os.path.exists(output_file), "file deletion unsuccessful")
+
+        input_filenames = [
+            os.path.join(input_directory, f)
+            for f in os.listdir(input_directory)
+            if os.path.isfile(os.path.join(input_directory, f))
+            and ("png" in f or "jpg" in f)
+        ]
+
+        # synchronous test of asynchronous function.
+        # source https://celery.school/unit-testing-celery-tasks
+        task_succeed = stitch_images.s(output_file, input_filenames).apply()
+
+        # to call it synchronously
+        # future = stitch_images.delay(output_file, input_filenames)
+        # the piece of information that need to be saved.
+        # task_id = future.id
+        # to get the result back out
+        # task_succeed = AsyncResult(id=task_id).get(timeout=10)
+
+        self.assertTrue(
+            task_succeed, "stiching algorithum failed on image set previously tested"
+        )
+        expected_directory = os.path.join(*os.path.split(output_file)[:-1])
+        self.assertTrue(
+            os.path.exists(output_file),
+            (
+                "task is claimed to be successful yet no file is created"
+                + f"{expected_directory} : {os.listdir(expected_directory)}"
+            ),
+        )
+
+    def test_dependency_present(self):
+        present = subprocess.check_output(
+            "docker manifest inspect opendronemap/odm > /dev/null 2>&1 && echo 1 || echo 0",
+            shell=True,
+        )
+        present = int(present)
+        self.assertTrue(
+            present == 1,
+            "odm image is not present, run `docker pull opendronemap/odm` to get it",
+        )
+
+    # def test_parking_lot_zoomed_in(self):
+
+    #     input_directory = os.path.join(
+    #         settings.MEDIA_ROOT, "test", "zoomed_in", "input"
+    #     )
+    #     output_file = os.path.join(
+    #         settings.MEDIA_ROOT, "test", "zoomed_in", "output.png"
+    #     )
+
+    #     self.stitch_test_helper(output_file, input_directory)
+
+    # def test_parking_lot_zoomed_out(self):
+
+    #     input_directory = os.path.join(
+    #         settings.MEDIA_ROOT, "test", "zoomed_out", "input"
+    #     )
+    #     output_file = os.path.join(
+    #         settings.MEDIA_ROOT, "test", "zoomed_out", "output.png"
+    #     )
+
+    #     self.stitch_test_helper(output_file, input_directory)
