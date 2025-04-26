@@ -7,10 +7,26 @@ from celery import shared_task
 import subprocess
 import shutil
 import os
+import math
 
 
 # pylint: disable=no-member
-def stitch_images_odm(output_path, input_pathes):
+def stitch_images_odm(
+    output_path: str, input_pathes: list[str], geo_data: list = None
+) -> bool:
+    """_summary_
+
+    Args:
+        output_path (str): The path that the output will be saved to
+        input_pathes (str): List of pathes each of which is an image.
+        geo_data (list, optional): The list of logs following the discord example data format. Defaults to None.
+
+    Returns:
+        bool: whether the task executed successfully, currently always True,
+    """
+
+    input_pathes.sort()
+
     # that images should be in [data_sets_path]/[project_name]/images
     data_sets_path = os.path.join(settings.MEDIA_ROOT, "odm_working_dir")
 
@@ -21,11 +37,42 @@ def stitch_images_odm(output_path, input_pathes):
     os.makedirs(os.path.join(data_sets_path, "default"), exist_ok=False)
     os.makedirs(os.path.join(data_sets_path, "default", "images"), exist_ok=False)
 
-    for i, img_path in enumerate(input_pathes):
+    for img_path in input_pathes:
+        img_name = os.path.split(img_path)[1]
         shutil.copy(
             img_path,
-            os.path.join(data_sets_path, "default", "images", f"{i}.png"),
+            os.path.join(data_sets_path, "default", "images", img_name),
         )
+
+    if geo_data is not None:
+        geo_data.sort(key=lambda x: x["data"]["Img"])
+
+        lat_center = 0
+        lat_center_count = 0
+        lng_center = 0
+        lng_center_count = 0
+        for g in geo_data:
+            if g["data"]["lat"] != 0:
+                lat_center += g["data"]["lat"]
+                lat_center_count += 1
+            if g["data"]["lng"] != 0:
+                lng_center += g["data"]["lng"]
+                lng_center_count += 1
+
+        ns_hemisphere = "N" if lat_center > 0 else "S"
+        geo_projection = f"WGS84 UTM {math.floor(lng_center/6)+31}{ns_hemisphere}\n"
+
+        geo_data_path = os.path.join(data_sets_path, "default", "images", "geo.txt")
+
+        with open(geo_data_path, "w+", "utf-8") as fi:
+            fi.write(geo_projection)
+            for g in geo_data:
+                image_original_path = input_pathes[geo_data["data"]["Img"] - 1]
+                img_name = os.path.split(image_original_path)[1]
+                img_lat = geo_data["data"]["Lat"]
+                img_lng = geo_data["data"]["Lng"]
+                img_alt = geo_data["data"]["Alt"]
+                fi.write(f"{img_name} {img_lat} {img_lng} {img_alt}\n")
 
     subprocess.Popen(
         f'docker run --rm -v "$(pwd)/{data_sets_path}":/datasets opendronemap/odm --project-path /datasets default --orthophoto-resolution 1 --orthophoto-png --skip-3dmodel --skip-report',
@@ -45,7 +92,7 @@ def stitch_images_odm(output_path, input_pathes):
 
 
 @shared_task
-def stitch_images(output_path, input_pathes):
+def stitch_images(output_path, input_pathes, geo_data=None):
     """
     Stitch images at input path and save it at the out put path
 
@@ -60,6 +107,7 @@ def stitch_images(output_path, input_pathes):
     success = stitch_images_odm(
         output_path,
         input_pathes,
+        geo_data,
     )
 
     return success
